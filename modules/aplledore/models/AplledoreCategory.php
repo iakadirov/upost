@@ -5,6 +5,7 @@ use Yii;
 use app\models\Category;
 use app\models\CategoryContent;
 use app\models\Seo;
+use app\components\IdevFunctions;
 
 class AplledoreCategory extends \yii\db\ActiveRecord{
 	public static function getCategory($id,$ids=NULL){
@@ -26,12 +27,14 @@ class AplledoreCategory extends \yii\db\ActiveRecord{
 		return Category::find()->with('content')->asArray()->all();
 	}
 
-	public static function contentLoad($post){
-		if (isset($post['id'])) {
-			return self::editCategory($post);
-		}else{
-			return self::createCategory($post);
-		}
+	public static function contentLoad($content){
+		$content = self::addCryl($content);
+		// if (isset($content['id'])) {
+		// 	return self::editCategory($content);
+		// }else{
+		// 	return self::createCategory($content);
+		// }
+		return $content;
 	}
 
 	public static function deleteCategory($id){
@@ -73,6 +76,13 @@ class AplledoreCategory extends \yii\db\ActiveRecord{
 				]);
 			}
 		}
+	}
+
+	protected function addCryl($content){
+		$content[2]['name'] = IdevFunctions::translit($content[1]['name']);
+		$content[2]['parent'] = $content[1]['parent'];
+		$content[2]['content'] = IdevFunctions::translit($content[1]['content']);
+		return $content;
 	}
 
 	protected function __deleteOne($id){

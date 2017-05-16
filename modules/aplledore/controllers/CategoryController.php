@@ -2,6 +2,7 @@
 namespace app\modules\aplledore\controllers;
 use Yii;
 use app\modules\aplledore\models\AplledoreCategory;
+use app\components\IdevFunctions;
 
 class CategoryController extends DevController{
   public function actionIndex($id=NULL) {
@@ -11,6 +12,8 @@ class CategoryController extends DevController{
       if ($id) {
         $category['id'] = $id;
       }
+      // debug(IdevFunctions::translit($category[1]))
+      debug(AplledoreCategory::contentLoad($category)); die;
       if (AplledoreCategory::contentLoad($category)) {
         return $this->redirect('index');
       }

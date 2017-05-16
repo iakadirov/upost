@@ -68,7 +68,21 @@ class IdevFunctions{
 		return $str;
 	}
 
-	public static function translit($s) {
+	public static function translit($s){
+		$s = trim($s);
+		$s = preg_replace("#(\w)(o')(\w)#", '$1ў$3', $s);
+		$s = preg_replace("#(\w)(O')(\w)#", '$1Ў$3', $s);
+		$arr1 = [" o'"," O'","o'","O'"," ye","yo","yu","ya"," Ye","Yo","Yu","Ya","sh","ch","Sh","Ch","SH","CH"];
+		$arr2 = [" ў"," Ў","ў","Ў"," йе","ё","ю","я"," Йе","Ё","Ю","Я","ш","ч","Ш","Ч","Ш","Ч"];
+		$s = str_replace($arr1, $arr2, $s);
+		$s = preg_replace("#(\w)(')(\w)#", '$1ъ$3', $s);
+		$lat = ["a","b","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","x","y","z","A","B","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","X","Y","Z"];
+		$cry = ["а","б","д","е","ф","г","ҳ","и","ж","к","л","м","н","о","п","қ","р","с","т","у","в","х","й","з","А","Б","Д","Е","Ф","Г","Ҳ","И","Ж","К","Л","М","Н","О","П","Қ","Р","С","Т","У","В","Х","Й","З"];
+		$s = str_replace($lat, $cry, $s);
+		return $s;
+	}
+
+	/*public static function translit($s) {
 	  $s = (string) $s; // преобразуем в строковое значение
 	  $s = strip_tags($s); // убираем HTML-теги
 	  $s = str_replace(array("\n", "\r"), " ", $s); // убираем перевод каретки
@@ -79,6 +93,6 @@ class IdevFunctions{
 	  $s = preg_replace("/[^0-9a-z-_ ]/i", "", $s); // очищаем строку от недопустимых символов
 	  $s = str_replace(" ", "-", $s); // заменяем пробелы знаком минус
 	  return $s; // возвращаем результат
-	}
+	}*/
 
 }
