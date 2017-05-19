@@ -7,22 +7,26 @@ use app\components\IdevFunctions;
 class CategoryController extends DevController{
   public function actionIndex($id=NULL) {
   	$this->view->title = 'Категории';
+    $this->data['content'] = AplledoreCategory::getContentList();
     if (Yii::$app->request->post('Category')) {
       $category = Yii::$app->request->post('Category');
       if ($id) {
         $category['id'] = $id;
       }
       // debug(IdevFunctions::translit($category[1]))
-      debug(AplledoreCategory::contentLoad($category)); die;
+      // debug($category); die;
       if (AplledoreCategory::contentLoad($category)) {
         return $this->redirect('index');
       }
     }
     if ($id) {
       $this->data['title'] = Yii::t('idev','category edit');
+      $this->data['category'] = AplledoreCategory::getCategory($id);
     }else{
       $this->data['title'] = Yii::t('idev','category create');
+      // $this->data['category'] = [];
     }
+    // debug($this->data); die;
     return $this->template('index');
   }
 

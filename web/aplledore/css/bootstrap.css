@@ -1,24 +1,3 @@
-/* ------------------------------------------------------------------------------
- *
- *  # Bootstrap file imports
- *
- *  Import all main Bootstrap files. Bootstrap version 3.3.5
- *
- *  Version: 1.1
- *  Latest update: Feb 5, 2016
- *
- * ---------------------------------------------------------------------------- */
-/* ------------------------------------------------------------------------------
- *
- *  # Global less file
- *
- *  Common less file with imports of plugins and pages
- *
- *  Version: 1.0
- *  Latest update: Feb 5, 2016
- *
- * ---------------------------------------------------------------------------- */
-/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -2273,7 +2252,7 @@ th {
 .table > thead > tr > td,
 .table > tbody > tr > td,
 .table > tfoot > tr > td {
-  padding: 12px 20px;
+  padding: 5px 10px;
   line-height: 1.5384616;
   vertical-align: top;
   border-top: 1px solid #ddd;

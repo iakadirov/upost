@@ -34,7 +34,7 @@ class DevController extends Controller{
     }
 		Yii::$app->params['langs'] = Language::getAllLangs();
 		$this->langs = Yii::$app->params['langs'];
-		Yii::$app->params['admin_lang'] = 'ru';
+		Yii::$app->params['admin_lang'] = 1;
 		if(!$this->__hasRoleUser($action)){
 			$this->redirect(['/aplledore/default/error']);
 			return false;

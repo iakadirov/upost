@@ -8,32 +8,30 @@ use app\models\Seo;
 use app\components\IdevFunctions;
 
 class AplledoreCategory extends \yii\db\ActiveRecord{
-	public static function getCategory($id,$ids=NULL){
+	public static function getCategory($id){
 		$content = Category::find()->with('contents')->where(['id'=>$id])->asArray()->one();
-		if($content['parent_id'] != 0){
-			$parent = CategoryContent::find()->select('name')->where(['category_id'=>$content['parent_id'], 'language'=>Yii::$app->params['admin_lang']])->asArray()->one();
-			$content['parent'] = $parent['name'];
-		}else{
-			$content['parent'] = 'Нет';
-		}
-		if (isset($ids) && is_array($ids)) {
-			$menu = Category::find()->where(['not in','category.id',$ids])->asArray()->indexBy('id')->with('content')->all();
-			$content['menu_list'] = MenuWidget::widget(['attr'=>['class'=>'dsSelectList'], 'data'=>$menu]);
+		if(!empty($content)){
+			if($content['parent_id'] != 0){
+				$parent = CategoryContent::find()->select('name')->where(['category_id'=>$content['parent_id'], 'language'=>Yii::$app->params['admin_lang']])->asArray()->one();
+				$content['parent'] = $parent['name'];
+			}else{
+				$content['parent'] = 'Нет';
+			}
 		}
 		return $content;
 	}
 
-	public static function getCategoryList(){
+	public static function getContentList(){
 		return Category::find()->with('content')->asArray()->all();
 	}
 
 	public static function contentLoad($content){
-		$content = self::addCryl($content);
-		// if (isset($content['id'])) {
-		// 	return self::editCategory($content);
-		// }else{
-		// 	return self::createCategory($content);
-		// }
+		if (isset($content['id'])) {
+			return self::editCategory($content);
+		}else{
+			$content = self::addCryl($content);
+			return self::createCategory($content);
+		}
 		return $content;
 	}
 
@@ -97,108 +95,46 @@ class AplledoreCategory extends \yii\db\ActiveRecord{
 	}
 
 	protected function createCategory($content){
-		$res = [];
-		if (empty($content[Yii::$app->params['admin_lang']]['name'])) {
-			foreach (Yii::$app->params['langs'] as $key => $value) {
-				if (!empty($content[$key]['name'])) {
-					$name = $content[$key]['name'];
-					break;
-				}
-			}
-			if (!isset($name)) {
-				$res['content']['all'] = 'empty';
-				return $res;
-			}
-		}else{
-			$name = $content[Yii::$app->params['admin_lang']]['name'];
-		}
 		$category = new Category();
-		$category->parent_id = $content['parent'];
-		if (isset($content[Yii::$app->params['admin_lang']]['position'])) {
-			$category->position = $content[Yii::$app->params['admin_lang']]['position'];
-		}else{
-			$category->position = 0;
-		}
+		$category->parent_id = $content[1]['parent'];
+		$category->date = time();
+		$category->update = time();
 		if($category->save()){
-			$res['category'] = 'success';
 			foreach (Yii::$app->params['langs'] as $key => $value) {
 				$categoryContent = new CategoryContent();
 				$categoryContent->category_id = $category->id;
 				$categoryContent->language = $key;
-				if (!empty($content[$key]['name'])) {
-					$categoryContent->name = $content[$key]['name'];
-				}else{
-					$categoryContent->name = $name;
-				}
+				$categoryContent->name = $content[$key]['name'];
 				$categoryContent->content = $content[$key]['content'];
-				$categoryContent->image = $content['image'];
-				if($categoryContent->save()){
-					$res['content'][$key] = 'success';
-				}else{
-					$res['content'][$key] = 'error';
-				}
-				$categorySeo = new CategorySeo();
-				$categorySeo->category_id = $category->id;
+				$categoryContent->save();
+				$categorySeo = new Seo();
+				$categorySeo->parent_id = $category->id;
+				$categorySeo->type = 'category';
 				$categorySeo->language = $key;
 				$categorySeo->title = $categoryContent->name;
 				$categorySeo->keywords = $categoryContent->name;
 				$categorySeo->description = $categoryContent->name;
-				if($categorySeo->save()){
-					$res['seo'][$key] = 'success';
-				}else{
-					$res['seo'][$key] = 'error';
-				}
+				$categorySeo->save();
 			}
+			return true;
 		}else{
-			$res['category'] = 'error';
+			return false;
 		}
-		return $res;
 	}
 
 	protected function editCategory($content){
-		$res = [];
-		$isEmpty = true;
-		foreach (Yii::$app->params['langs'] as $key => $value) {
-			if (!empty($content[$key]['name'])) {
-				$isEmpty = false;
+		$category = Category::findOne($content['id']);
+		$category->parent_id = $content[1]['parent'];
+		$category->update = time();
+		if($category->save()){
+			foreach (Yii::$app->params['langs'] as $key => $value) {
+				$categoryContent = CategoryContent::find()->where(['category_id'=>$category->id, 'language'=>$key])->one();
+				$categoryContent->name = $content[$key]['name'];
+				$categoryContent->content = $content[$key]['content'];
+				$categoryContent->save();
 			}
+			return true;
 		}
-		if ($isEmpty) {
-			$res['content']['all'] = 'empty';
-		}else{
-			$category = Category::findOne($content['id']);
-			$category->parent_id = $content['parent'];
-			if($category->save()){
-				$res['category'] = 'success';
-				foreach (Yii::$app->params['langs'] as $key => $value) {
-					$categoryContent = CategoryContent::find()->where(['category_id'=>$category->id, 'language'=>$key])->one();
-					if (!empty($content[$key]['name'])) {
-						$categoryContent->name = $content[$key]['name'];
-					}
-					$categoryContent->content = $content[$key]['content'];
-					$categoryContent->image = $content['image'];
-					if($categoryContent->save()){
-						$res['content'][$key] = 'success';
-					}else{
-						$res['content'][$key] = 'error';
-					}
-
-					$categorySeo = CategorySeo::find()->where(['category_id'=>$category->id, 'language'=>$key])->one();
-					if (!empty($content[$key]['name'])) {
-						$categorySeo->title = $content[$key]['name'];
-						if($categorySeo->save()){
-							$res['seo'][$key] = 'success';
-						}else{
-							$res['seo'][$key] = 'error';
-						}
-					}else{
-						$res['seo'][$key] = 'empty';
-					}
-				}
-			}else{
-				$res['category'] = 'error';
-			}
-		}
-		return $res;
+		return false;
 	}
 }

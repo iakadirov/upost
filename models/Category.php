@@ -1,43 +1,25 @@
 <?php
-
 namespace app\models;
-
 use Yii;
+class Category extends \yii\db\ActiveRecord{
+  public function rules(){
+    return [
+      [['parent_id','date','update'], 'integer'],
+    ];
+  }
 
-/**
- * This is the model class for table "category".
- *
- * @property integer $id
- * @property integer $parent_id
- */
-class Category extends \yii\db\ActiveRecord
-{
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return 'category';
-    }
+  public function getContent(){
+    return $this->hasOne(CategoryContent::classname(),['category_id' => 'id'])->where(['category_content.language'=>Yii::$app->params['admin_lang']]);
+  }
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['parent_id'], 'integer'],
-        ];
-    }
+  public function getContents(){
+    return $this->hasMany(CategoryContent::classname(),['category_id' => 'id'])->indexBy('language');
+  }
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'parent_id' => 'Parent ID',
-        ];
-    }
+  public function attributeLabels(){
+    return [
+      'id' => 'ID',
+      'parent_id' => 'Parent ID',
+    ];
+  }
 }
