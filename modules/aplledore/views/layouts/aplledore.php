@@ -158,6 +158,18 @@ AplledoreAsset::register($this);
 	          </div>
 	        </div>
 	      </div>
+	      <?php if (Yii::$app->session->hasFlash('error')): ?>
+		      <div class="alert alert-error alert-styled-left alert-arrow-left alert-bordered m-10">
+						<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
+						<span class="text-semibold"><?=Yii::$app->session->getFlash('error')?></span>
+			    </div>
+	      <?php endif ?>
+	      <?php if (Yii::$app->session->hasFlash('success')): ?>
+		      <div class="alert alert-success alert-styled-left alert-arrow-left alert-bordered m-10">
+						<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
+						<span class="text-semibold"><?=Yii::$app->session->getFlash('success')?></span>
+			    </div>
+	      <?php endif ?>
 				<?=$content?>
 				<div class="footer text-muted col-xs-12">
           &copy; <?=date('Y',time())?>. <a>Upost | Ўзбекистон ва жаҳоннинг энг сўнгги янгиликлари.</a>

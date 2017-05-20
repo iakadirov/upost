@@ -919,7 +919,7 @@ legend .control-arrow:hover {
   color: #333333;
 }
 label {
-  margin-bottom: 7px;
+  margin-bottom: 0;
   font-weight: 400;
 }
 select[multiple],
@@ -993,7 +993,7 @@ textarea {
 /* Form components
 ----------------------------------*/
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   position: relative;
 }
 .form-group .form-group:last-child {
@@ -5812,18 +5812,8 @@ a.list-group-item-danger:hover,
 a.list-group-item-danger:focus {
   color: #9c1f1f;
 }
-/* ------------------------------------------------------------------------------
-*
-*  # Panels component
-*
-*  Overrides for panels bootstrap component
-*
-*  Version: 1.1
-*  Latest update: Mar 10, 2016
-*
-* ---------------------------------------------------------------------------- */
 .panel {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   padding: 10px;
   border-color: #ddd;
   color: #333333;
@@ -6167,8 +6157,9 @@ h6.panel-title,
 }
 .modal-header .close {
   position: absolute;
-  right: 20px;
+  right: 10px;
   top: 50%;
+  transform: translateY(-50%);
   margin-top: 0;
 }
 .modal-body .close {

@@ -36,44 +36,15 @@ class AplledoreCategory extends \yii\db\ActiveRecord{
 	}
 
 	public static function deleteCategory($id){
-		if (is_array($id) && count($id) > 1) {
-			if( Category::deleteAll(['in','id',$id]) && CategoryContent::deleteAll(['in','category_id',$id]) && CategorySeo::deleteAll(['in','category_id',$id]) ) {
-				$res['res'] = true;
-			}else{
-				$res['res'] = false;
-			}
-		}elseif(count($id) == 1){
-			$res['res'] = self::__deleteOne($id);
-		}elseif(is_numeric($id)){
-			$res['res'] = self::__deleteOne($id);
-		}
-
-		if ($res['res'] === TRUE) {
-			$res['res'] = 'success';
-			$res['text'] = 'Готова!';
-			return json_encode($res);
-		}else{
-			$res['res'] = 'error';
-			$res['text'] = 'Упс! Что-то пошла не так!';
-			return json_encode($res);
-		}
-	}
-
-	public static function editBeforeDelete($data){
-		if( isset($data['delete_id']) && isset($data['new_parent']) ){
-			$res = Yii::$app->db->createCommand()->update('Category', ['parent_id' => (int)$data['new_parent']], 'parent_id = '.(int)$data['delete_id'])->execute();
-			if ($res && self::__deleteOne((int)$data['delete_id'])) {
-				return json_encode([
-					'res'=>'success',
-					'text'=>'Готова!',
-				]);
-			}else{
-				return json_encode([
-					'res'=>'error',
-					'content'=>'Упс! Что-то пошла не так!',
-				]);
+		$content = Category::findOne($id);
+		if(!empty($content)){
+			Yii::$app->db->createCommand()->update('post', ['category_id' => 0], 'category_id = '.$id)->execute();
+			if($content->delete()){
+				CategoryContent::deleteAll(['category_id'=>$content->id]);
+				return true;
 			}
 		}
+		return false;
 	}
 
 	protected function addCryl($content){
@@ -81,17 +52,6 @@ class AplledoreCategory extends \yii\db\ActiveRecord{
 		$content[2]['parent'] = $content[1]['parent'];
 		$content[2]['content'] = IdevFunctions::translit($content[1]['content']);
 		return $content;
-	}
-
-	protected function __deleteOne($id){
-		$category = Category::findOne($id);
-		if (!empty($category) && $category->delete()) {
-			CategoryContent::deleteAll(['category_id'=>$id]);
-			CategorySeo::deleteAll(['category_id'=>$id]);
-			return true;
-		}else{
-			return false;
-		}
 	}
 
 	protected function createCategory($content){

@@ -6,9 +6,9 @@ use app\components\IdevFunctions;
 <ul class="navigation navigation-main navigation-accordion">
   <li class="active"><a href="<?=IdevFunctions::to('/')?>"><i class="icon-home4"></i> <span>Aplledore</span></a></li>
   <li class="navigation-header"><span>Loyihalar</span> <i class="icon-menu" title="Main pages"></i></li>
-  <li>
+  <li <?=IdevFunctions::isActive(['news','category'],'class="active"')?>>
     <a href="#"><i class="icon-newspaper"></i> <span>Yangiliklar<span class="label bg-danger-400">25</span></span></a>
-    <ul>
+    <ul <?=IdevFunctions::isActive(['news','category'],'style="display:block"')?>>
       <li><a href="<?=IdevFunctions::to('/news/create')?>"><i class="icon-pencil7"></i> Yangilik yozish<span class="label bg-success-400">Yangi</span></a></li>
       <li class="navigation-divider"></li>
       <li><a href="<?=IdevFunctions::to('/news/new-post-list')?>"><i class="icon-magazine"></i><span>Nashr uchun <span class="label bg-danger-400">25</span></span></a></li>

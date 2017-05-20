@@ -12,6 +12,8 @@ use app\components\IdevFunctions;
 class DevController extends Controller{
 	public $langs;
 	public $data = [];
+	public $isAjax = false;
+	public $post = [];
 
   public function behaviors(){
 	  return [
@@ -32,6 +34,8 @@ class DevController extends Controller{
       $this->redirect(['/login']);
       return false;
     }
+    if(Yii::$app->request->isAjax){$this->isAjax = true;}
+		if(Yii::$app->request->post()){$this->post = Yii::$app->request->post();}
 		Yii::$app->params['langs'] = Language::getAllLangs();
 		$this->langs = Yii::$app->params['langs'];
 		Yii::$app->params['admin_lang'] = 1;

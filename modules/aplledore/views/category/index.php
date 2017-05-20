@@ -72,7 +72,7 @@ use yii\widgets\ActiveForm;
 		    					</td>
 		    					<td width="15%">
 		    						<a href="<?=IdevFunctions::to('/category/'.$item['id'])?>"><?=Yii::t('idev','Edit')?></a><br/>
-		    						<a href="<?=IdevFunctions::to('/category/delete/'.$item['id'])?>"><?=Yii::t('idev','Delete')?></a>
+		    						<a href="<?=IdevFunctions::to('/category/delete/'.$item['id'])?>" data-action="delete" data-text="<?=Yii::t('idev','Delete is category {name}?',['name'=>$item['content']['name']]);?>"><?=Yii::t('idev','Delete')?></a>
 		    					</td>
 		    				</tr>
 		    				<?php foreach ($data['content'] as $child): ?>

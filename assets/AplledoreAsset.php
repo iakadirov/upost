@@ -16,8 +16,8 @@ class AplledoreAsset extends AssetBundle{
   ];
   public $js = [
     'web/aplledore/js/bootstrap.min.js',
-    // 'web/aplledore/js/pace.min.js',
     'web/aplledore/js/blockui.min.js',
+    'web/aplledore/js/dsPagination.js',
     'web/aplledore/js/app.js',
   ];
   public $depends = [

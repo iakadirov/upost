@@ -1,16 +1,3 @@
-/* ------------------------------------------------------------------------------
-*
-*  # Template JS core
-*
-*  Core JS file with default functionality configuration
-*
-*  Version: 1.3
-*  Latest update: Aug 10, 2016
-*
-* ---------------------------------------------------------------------------- */
-
-
-// Allow CSS transitions when page is loaded
 $(window).on('load', function() {
     $('body').removeClass('no-transitions');
 });
@@ -18,11 +5,10 @@ $(window).on('load', function() {
 
 $(function() {
 
-    $(document).on('click','#qwerty',function(){
-        $.post("/aplledore/post/delete",function(res){
-            controle.log();
-        },'html');
-        return false;
+  $('[data-action="pagination"').dsPagination();
+
+    $(document).on('click','[data-action="delete"]',function(){
+      return confirm($(this).data('text'));
     });
 
 

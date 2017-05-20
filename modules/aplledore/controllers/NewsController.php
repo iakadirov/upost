@@ -20,7 +20,7 @@ class NewsController extends DevController{
 
   public function actionDelete($id) {
   	$this->view->title = 'Удалить';
-  	if(Yii::$app->request->isAjax){
+  	if($this->isAjax){
   		echo "is Ajax";
   		die;
   	}

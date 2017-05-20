@@ -115,7 +115,7 @@
   		P = $(this);
   		var content = '', offset = 0, pageCount = 1;
   		if (options.pLimit < options.pCount){
-  			content += '<ul class="dsPagination"><li><a href="#" data-label="pFirst"><i class="fa fa-angle-double-left"></i></a></li><li><a href="#" data-label="pPrev"><i class="fa fa-angle-left"></i></a></li><div><span>';
+  			content += '<ul class="dsPagination"><li><a href="#" data-label="pFirst"><i class="icon-arrow-left15"></i></a></li><li><a href="#" data-label="pPrev"><i class="icon-arrow-left12"></i></a></li><div><span>';
   			while(0 < options.pCount){
           if (pageCount == 1){
   				  content += '<li><a href="#" data-page="'+offset+'" data-label="'+pageCount+'" class="active">'+pageCount+'</a></li>';
@@ -126,7 +126,7 @@
   				offset += options.pLimit;
   				pageCount++;
   			}
-  			content += '</span></div><li><a href="#" data-label="pNext"><i class="fa fa-angle-right"></i></a></li><li><a href="#" data-label="pLast"><i class="fa fa-angle-double-right"></i></a></li></ul>';
+  			content += '</span></div><li><a href="#" data-label="pNext"><i class="icon-arrow-right13"></i></a></li><li><a href="#" data-label="pLast"><i class="icon-arrow-right15"></i></a></li></ul>';
   		}
 
   		P.html(content);

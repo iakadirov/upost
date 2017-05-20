@@ -42,21 +42,12 @@ class IdevFunctions{
 		return Url::toRoute(self::MODUL_URL.$url);
 	}
 
-	public static function isActiveMenu($urlText){
-		$res = "";
-		if (isset($_SERVER['REQUEST_URI'])){
-			$url = explode('/', $_SERVER['REQUEST_URI']);
-			if (isset($url[2])){
-				if ($url[2] == $urlText) {
-					$res = "active";
-				}
-			}else{
-				if ($urlText == 'dashboard') {
-					$res = "active";
-				}
-			}
+	public static function isActive($arr,$text){
+		if (in_array(Yii::$app->controller->id, $arr)) {
+			return $text;
+		}else{
+			return "";
 		}
-		return $res;
 	}
 
 	/* POST */
