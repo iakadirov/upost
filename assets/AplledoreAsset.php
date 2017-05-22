@@ -12,12 +12,15 @@ class AplledoreAsset extends AssetBundle{
     'web/aplledore/css/core.css',
     'web/aplledore/css/components.css',
     'web/aplledore/css/colors.css',
+    'web/aplledore/css/jquery.typeahead.css',
     'web/aplledore/css/style.css',
   ];
   public $js = [
     'web/aplledore/js/bootstrap.min.js',
     'web/aplledore/js/blockui.min.js',
     'web/aplledore/js/dsPagination.js',
+    'web/aplledore/js/bootstrap-typeahead.js',
+    'web/aplledore/plugins/switch/switch.min.js',
     'web/aplledore/js/app.js',
   ];
   public $depends = [
