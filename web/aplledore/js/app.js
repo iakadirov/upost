@@ -5,11 +5,7 @@ $(window).on('load', function() {
 
 $(function() {
 
-  $('[data-action="pagination"').dsPagination();
-
-  $(document).on('click','[data-action="delete"]',function(){
-    return confirm($(this).data('text'));
-  });
+  var url = location.href.split('/'), mcUrl = '/'+url[3]+'/'+url[4];
 
   $(document).on('click', '#tagCreateNew #createNewTag', function(){
     if ($('#tagCreateNew input').val() != ' ' && $('#tagCreateNew input').val().length != 0) {
@@ -24,31 +20,49 @@ $(function() {
     $(this).parent().remove();
     eachTagList();
   });
+  $('.tagOldListInput').typeahead({
+    onSelect: function(item) {
+      $('.tagList').append('<span class="badge badge-success" data-id="'+item.value+'" data-text="'+item.text+'">'+item.text+'<i class="close">&times</i></span>');
+      eachTagList();
+      setTimeout(function(){
+        $('.tagOldListInput').val("");
+      }, 100);
+    },
+    ajax: {
+      url:mcUrl+'/get-tag-list',
+      method: "post",
+      triggerLength: 1,
+      preDispatch: function(query){
+        var str = '',num = 0;
+        $('.tagList span').each(function(i){
+          if ($(this).data("id") != 0) {
+            str = str+'"'+(num++)+'":"'+$(this).data("id")+'",';
+          }
+        });
+        str = "{"+str.slice(0,-1)+"}";
+        return {name:query,ids:str};
+      },
+    }
+  });
 
-  // $('.tagOldListInput').typeahead({
-  //   onSelect: function(item) {
-  //     $('.tagList').append('<span class="badge badge-success" data-id="'+item.value+'" data-text="'+item.text+'">'+item.text+'<i class="close">&times</i></span>');
-  //     eachTagList();
-  //     setTimeout(function(){
-  //       $('.tagOldListInput').val("");
-  //     }, 100);
-  //   },
-  //   ajax: {
-  //     url:'/'+url[3]+'/post/get-tag-list',
-  //     method: "post",
-  //     triggerLength: 1,
-  //     preDispatch: function(query){
-  //       var str = '',num = 0;
-  //       $('.tagList span').each(function(i){
-  //         if ($(this).data("id") != 0) {
-  //           str = str+'"'+(num++)+'":"'+$(this).data("id")+'",';
-  //         }
-  //       });
-  //       str = "{"+str.slice(0,-1)+"}";
-  //       return {name:query,ids:str};
-  //     },
-  //   }
-  // });
+  $('#searchThema').typeahead({
+    onSelect: function(item) {
+      $('[name="Post[thema_id]"]').val(item.value);
+    },
+    ajax: {
+      url:mcUrl+'/get-thema-list',
+      method: "post",
+      triggerLength: 1,
+      preDispatch: function(query){
+        return {name:query};
+      },
+    }
+  });
+  $('#searchThema').change(function(){
+    if($(this).val() == '' || $(this).val() == ' '){
+      $('[name="Post[thema_id]"]').val(0);
+    };
+  });
 
   function eachTagList(){
     var oldTags = '', newTags = '';
@@ -65,6 +79,12 @@ $(function() {
     console.log(oldTags);
   }
 
+  $('[data-action="pagination"').dsPagination();
+  $(".switch").bootstrapSwitch();
+
+  $(document).on('click','[data-action="delete"]',function(){
+    return confirm($(this).data('text'));
+  });
 
 
     // Disable CSS transitions on page load

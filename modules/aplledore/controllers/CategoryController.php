@@ -19,7 +19,7 @@ class CategoryController extends DevController{
         }else{
           Yii::$app->session->setFlash('success',Yii::t('idev','category is created'));
         }
-        return $this->redirect('index');
+        return $this->redirect(['index']);
       }else{
         if($id){
           Yii::$app->session->setFlash('error',Yii::t('idev','category is no saved'));

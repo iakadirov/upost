@@ -81,6 +81,8 @@ $config = [
         '/aplledore/news/delete/<id:\d+>'=>'/aplledore/news/delete',
         '/aplledore/category/delete/<id:\d+>'=>'/aplledore/category/delete',
         '/aplledore/category/<id:\d+>'=>'/aplledore/category/index',
+        '/aplledore/thema/delete/<id:\d+>'=>'/aplledore/thema/delete',
+        '/aplledore/thema/<id:\d+>'=>'/aplledore/thema/index',
       ],
     ],
   ],
