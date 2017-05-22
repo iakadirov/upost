@@ -10,6 +10,10 @@ class NewsController extends DevController{
 
   public function actionCreate() {
   	$this->view->title = 'Создать';
+    if($this->post['Post']){
+      debug($this->post['Post']);
+      die;
+    }
     return $this->render('create');
   }
 

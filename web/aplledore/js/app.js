@@ -7,9 +7,64 @@ $(function() {
 
   $('[data-action="pagination"').dsPagination();
 
-    $(document).on('click','[data-action="delete"]',function(){
-      return confirm($(this).data('text'));
+  $(document).on('click','[data-action="delete"]',function(){
+    return confirm($(this).data('text'));
+  });
+
+  $(document).on('click', '#tagCreateNew #createNewTag', function(){
+    if ($('#tagCreateNew input').val() != ' ' && $('#tagCreateNew input').val().length != 0) {
+      $('.tagList').append('<span class="badge badge-default" data-id="0" data-text="'+$('#tagCreateNew input').val()+'" data-lang="'+$('#tagCreateNew select').val()+'">'+$('#tagCreateNew input').val()+" ("+$('#tagCreateNew select option:selected').text()+")"+'<i class="close">&times</i></span>');
+      eachTagList();
+      $('#tagCreateNew input').val('');
+      $('#tagCreateNew input').focus();
+    }
+    return false;
+  });
+  $(document).on('click','.tagList .close',function(){
+    $(this).parent().remove();
+    eachTagList();
+  });
+
+  // $('.tagOldListInput').typeahead({
+  //   onSelect: function(item) {
+  //     $('.tagList').append('<span class="badge badge-success" data-id="'+item.value+'" data-text="'+item.text+'">'+item.text+'<i class="close">&times</i></span>');
+  //     eachTagList();
+  //     setTimeout(function(){
+  //       $('.tagOldListInput').val("");
+  //     }, 100);
+  //   },
+  //   ajax: {
+  //     url:'/'+url[3]+'/post/get-tag-list',
+  //     method: "post",
+  //     triggerLength: 1,
+  //     preDispatch: function(query){
+  //       var str = '',num = 0;
+  //       $('.tagList span').each(function(i){
+  //         if ($(this).data("id") != 0) {
+  //           str = str+'"'+(num++)+'":"'+$(this).data("id")+'",';
+  //         }
+  //       });
+  //       str = "{"+str.slice(0,-1)+"}";
+  //       return {name:query,ids:str};
+  //     },
+  //   }
+  // });
+
+  function eachTagList(){
+    var oldTags = '', newTags = '';
+    $('.tagList span').each(function(i){
+      if ($(this).data("id") == 0) {
+        newTags = newTags+'{"name":"'+$(this).data('text')+'","lang":"'+$(this).data('lang')+'"},';
+      }
+      if($(this).data("id") > 0){
+        oldTags = oldTags+'"'+parseInt($(this).data("id"))+'":"'+$(this).data('text')+'",';
+      }
     });
+    $('#oldTags').val("{"+oldTags.slice(0,-1)+"}");
+    $('#newTags').val("["+newTags.slice(0,-1)+"]");
+    console.log(oldTags);
+  }
+
 
 
     // Disable CSS transitions on page load
