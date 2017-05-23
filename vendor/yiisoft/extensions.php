@@ -57,4 +57,13 @@ return array (
       '@dosamigos/tinymce' => $vendorDir . '/2amigos/yii2-tinymce-widget/src',
     ),
   ),
+  'skeeks/yii2-imagine' => 
+  array (
+    'name' => 'skeeks/yii2-imagine',
+    'version' => '2.0.0.0',
+    'alias' => 
+    array (
+      '@skeeks/imagine' => $vendorDir . '/skeeks/yii2-imagine',
+    ),
+  ),
 );

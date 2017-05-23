@@ -21,7 +21,7 @@
               </div>
               <div class="form-group">
                 <label><?=Yii::t('idev','Content')?></label>
-                <textarea class="form-control" name="Post[<?=$key?>][content]" rows="10"></textarea>
+                <textarea class="form-control content_edit" name="Post[<?=$key?>][content]" rows="10"></textarea>
               </div>
             </div>
           <?php endforeach ?>
@@ -31,6 +31,7 @@
 
     <div class="col-lg-3 pl-0">
       <div class="panel panel-flat">
+          <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">open</button>
         <div class="form-group">
           <label><?=Yii::t('idev','Category')?></label>
           <select class="form-control" name="Post[category_id]">
@@ -48,7 +49,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label><?=Yii::t('idev','Category')?></label>
+          <label><?=Yii::t('idev','Thema')?></label>
           <input class="form-control" type="text" id="searchThema">
           <input type="hidden" name="Post[thema_id]" value="0">
         </div>

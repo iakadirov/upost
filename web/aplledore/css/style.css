@@ -1,3 +1,6 @@
+*::-webkit-scrollbar {width: 5px !important;margin-left: -15px !important;background-color: transparent !important;}
+*::-webkit-scrollbar-thumb {border-radius: 0 !important;background-color: rgb(0, 19, 19) !important;}
+*::-webkit-scrollbar-track {border-radius: 0 !important;background-color: transparent !important;}
 .btn{border-radius:0!important;}
 .o-h{overflow:hidden;}
 .p-0{padding: 0px !important;}
@@ -59,3 +62,21 @@
 .tagBlock .nav-tabs{border-color: #afafaf;}
 .tagBlock .nav-tabs .nav-item.show .nav-link, .tagBlock .nav-tabs .nav-link.active, .tagBlock .nav-tabs .nav-item.show .nav-link:hover, .tagBlock .nav-tabs .nav-link.active:hover, .tagBlock .nav-tabs .nav-item.show .nav-link:focus, .tagBlock .nav-tabs .nav-link.active:focus{border-color: #afafaf #afafaf transparent #afafaf;}
 #tagListTab{padding-bottom: 0;}
+.modal{z-index:99999;}
+#mediaModalContent{width: 90%;height: 90%;position: fixed;top: 50%;left: 50%;overflow: hidden;transform: translate(-50%, -50%);}
+#mediaModalContent > .modal-dialog{width: 100%;}
+#mediaModalContent .tab-content{padding:10px 10px 0 10px;}
+#mediaModalContent .tab-content .tab-pane{height: 100%;position: relative;}
+#myAwesomeDropzone label{position: absolute;top: 50%;left: 50%;width: 80%;text-align: center;-webkit-transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);transform: translate(-50%,-50%);font-size: 26px !important;}
+#myAwesomeDropzone .dz-default.dz-message{display: none;}
+#mediaTabContent{height: 84.5%;}
+#imageContent{margin-right: -5px;}
+.imagesContent{margin-right: -5px;margin-left: -5px;padding: 0 0 38px 0;overflow: hidden;overflow-y: scroll;}
+.imageBlock{width: 25%;height: 200px;float: left;position: relative;padding: 0 5px 10px 5px;box-sizing: border-box;}
+.imageBlock figure{width: 100%;height: 100%;margin: 0;background-size: cover !important;}
+.imageBlock a.btn{position: absolute;bottom: 10px;color: #fff;right: 5px;font-size: 14px;letter-spacing: 1px;padding: 5px 10px;}
+.imagePagination{position: absolute;bottom: 0;left: 0;right: 0;z-index: 5;padding: 5px;background-color: #fff;}
+.closeModal{position: absolute;top:10px;right:10px;width: 30px;cursor: pointer;opacity: 0;-webkit-transition: all 0.3s ease-in-out; -moz-transition: all 0.3s ease-in-out; -o-transition: all 0.3s ease-in-out; transition: all 0.3s ease-in-out;}
+.closeModal svg{fill: #000;}
+.closeModal:hover svg{fill: #000;}
+

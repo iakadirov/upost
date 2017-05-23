@@ -270,7 +270,7 @@
       -webkit-filter: blur(8px);
       filter: blur(8px); }
     .myDropzone .dz-preview .dz-image {
-      border-radius: 20px;
+      border-radius: 0;
       overflow: hidden;
       position: relative;
       display: block;

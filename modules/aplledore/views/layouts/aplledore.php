@@ -177,6 +177,45 @@ AplledoreAsset::register($this);
 			</div>
 		</div>
 	</div>
+
+<div class="modal fade" id="mediaModalContent">
+	<div class="modal-dialog">
+	  <div class="modal-content modalPanel">
+	    <h1 class="m-0 px-10 pb-10">Modal Media Load Content <span class="closeModal pull-right" onclick="$('#mediaModalContent').modal('hide')"></span></h1>
+	    <ul class="nav nav-tabs mb-0 px-10">
+	      <li class="active"><a href="#imageContent" data-toggle="tab" class="nav-link">Images</a></li>
+	      <li><a href="#imageLoad" data-toggle="tab" class="nav-link">Download</a></li>
+	    </ul>
+	    <div class="tab-content" id="mediaTabContent">
+	      <div class="tab-pane active" id="imageContent">        
+	      </div>
+	      <div class="tab-pane" id="imageLoad">
+	        <div id="myAwesomeDropzone" class="myDropzone" data-max-size="2"><label for="myAwesomeDropzone">Перетащите файлы сюда или выберите файлы</label></div>
+	      </div>
+	    </div>
+	    <!-- <div class="preloader"><img src="/web/idev/img/preloader4.gif"></div> -->
+	  </div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 <?php $this->endBody() ?>
 </body>
 </html>

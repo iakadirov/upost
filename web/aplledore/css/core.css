@@ -6124,20 +6124,16 @@ h6.panel-title,
   opacity: 1;
   filter: alpha(opacity=100);
 }
-/* ------------------------------------------------------------------------------
-*
-*  # Modals component
-*
-*  Overrides for modals bootstrap component
-*
-*  Version: 1.0
-*  Latest update: May 25, 2015
-*
-* ---------------------------------------------------------------------------- */
 .modal-content {
-  border-radius: 3px;
+  border-radius: 0;
   -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
 }
 .modal-header {
   position: relative;

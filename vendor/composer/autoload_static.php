@@ -25,6 +25,10 @@ class ComposerStaticInit94d15878bc24100850c6281a1e85878c
             'yii\\bootstrap\\' => 14,
             'yii\\' => 4,
         ),
+        's' => 
+        array (
+            'skeeks\\imagine\\' => 15,
+        ),
         'p' => 
         array (
             'phpDocumentor\\Reflection\\' => 25,
@@ -106,6 +110,10 @@ class ComposerStaticInit94d15878bc24100850c6281a1e85878c
         'yii\\' => 
         array (
             0 => __DIR__ . '/..' . '/yiisoft/yii2',
+        ),
+        'skeeks\\imagine\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/skeeks/yii2-imagine',
         ),
         'phpDocumentor\\Reflection\\' => 
         array (
@@ -201,6 +209,13 @@ class ComposerStaticInit94d15878bc24100850c6281a1e85878c
             'Prophecy\\' => 
             array (
                 0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
+            ),
+        ),
+        'I' => 
+        array (
+            'Imagine' => 
+            array (
+                0 => __DIR__ . '/..' . '/imagine/imagine/lib',
             ),
         ),
         'H' => 
