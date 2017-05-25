@@ -90,7 +90,8 @@ class MediaController extends DevController{
           $model->url = Yii::getAlias('@web').'/uploads/full/'.$imageName;
           $model->date = time();
           $model->save(false);
-          Image::thumbnail( Yii::getAlias('@webroot').'/uploads/full/'.$imageName , 200, 200)->save(Yii::getAlias('@webroot').'/uploads/medium/'.$imageName, ['quality' => 80]);
+          Image::thumbnail( Yii::getAlias('@webroot').'/uploads/full/'.$imageName , 378, 255)->save(Yii::getAlias('@webroot').'/uploads/medium/'.$imageName, ['quality' => 70]);
+          Image::thumbnail( Yii::getAlias('@webroot').'/uploads/full/'.$imageName , 73, 54)->save(Yii::getAlias('@webroot').'/uploads/small/'.$imageName, ['quality' => 70]);
           return ['res'=>'success'];
         }else{
           return ['res'=>'error'];

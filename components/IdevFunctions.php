@@ -50,6 +50,14 @@ class IdevFunctions{
 		}
 	}
 
+	public static function setSuccessFlash($text){
+		Yii::$app->session->setFlash('success',$text);
+	}
+
+	public static function setErrorFlash($text){
+		Yii::$app->session->setFlash('error',$text);
+	}
+
 	/* POST */
 	public static function getPostCategoryList($arr){
 		$str = '';

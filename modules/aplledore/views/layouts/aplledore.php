@@ -159,7 +159,7 @@ AplledoreAsset::register($this);
 	        </div>
 	      </div>
 	      <?php if (Yii::$app->session->hasFlash('error')): ?>
-		      <div class="alert alert-error alert-styled-left alert-arrow-left alert-bordered m-10">
+		      <div class="alert alert-danger alert-styled-left alert-arrow-left alert-bordered m-10">
 						<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
 						<span class="text-semibold"><?=Yii::$app->session->getFlash('error')?></span>
 			    </div>

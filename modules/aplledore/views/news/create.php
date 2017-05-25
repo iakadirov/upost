@@ -23,6 +23,10 @@
                 <label><?=Yii::t('idev','Content')?></label>
                 <textarea class="form-control content_edit" name="Post[<?=$key?>][content]" rows="10"></textarea>
               </div>
+              <div class="form-group">
+                <label><?=Yii::t('idev','Excerpt')?></label>
+                <textarea class="form-control" name="Post[<?=$key?>][excerpt]" rows="4"></textarea>
+              </div>
             </div>
           <?php endforeach ?>
         </div>
@@ -31,7 +35,6 @@
 
     <div class="col-lg-3 pl-0">
       <div class="panel panel-flat">
-          <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">open</button>
         <div class="form-group">
           <label><?=Yii::t('idev','Category')?></label>
           <select class="form-control" name="Post[category_id]">
@@ -64,7 +67,7 @@
           </div>
         </div>
         <div class="form-group o-h">
-          <label class="control-label col-lg-4 p-0 text-semibold"><h6 class="text-semibold">Obuna</h6></label>
+          <label class="control-label col-lg-4 p-0 text-semibold"><h6 class="text-semibold"><?=Yii::t('idev','Subscribe')?></h6></label>
           <div class="col-lg-8">
             <div class="checkbox checkbox-switch">
               <label>
@@ -83,9 +86,19 @@
             </div>
           </div>
         </div>
+        <div class="form-group o-h">
+          <label class="control-label col-lg-4 p-0 text-semibold"><h6 class="text-semibold"><?=Yii::t('idev','Funny')?></h6></label>
+          <div class="col-lg-8">
+            <div class="checkbox checkbox-switch">
+              <label>
+                <input type="checkbox" name="Post[funny]" data-on-color="success" data-off-color="default" data-on-text="<?=Yii::t('idev','Funny')?>" data-off-text="<?=Yii::t('idev','Plain')?>" class="switch">
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="panel panel-flat">
-        <label>Реклама</label>
+        <label><?=Yii::t('idev','Reklama')?></label>
         <div class="form-group o-h mb-0">
           <label class="control-label col-lg-4 p-0 text-semibold"><h6 class="text-semibold">PR</h6></label>
           <div class="col-lg-8">
@@ -95,6 +108,9 @@
               </label>
             </div>
           </div>
+          <label><?=Yii::t('idev','Reklama end date')?></label>
+          <input class="form-control" type="date" name="Post[pr_date]">
+          <input class="form-control" type="time" name="Post[pr_time]">
         </div>
       </div>
       <div class="panel panel-flat tagBlock">
@@ -131,6 +147,33 @@
             </div>
           </div>
         </div>  
+      </div>
+      <div class="panel panel-flat">
+        <label class="mt-0 mb-10"><?=Yii::t('idev','Image')?></label>
+        <a href="#" class="btn btn-link pasteImages" id="postImage">
+          <div class="w-100 minyatura" title="<?=Yii::t('idev','Select image')?>"><?=Yii::t('idev','Select image')?></div>
+          <input name="Post[image]" type="hidden" id="minyatura" class="form-control">
+        </a>
+      </div>
+      <div class="panel panel-flat">
+        <label><?=Yii::t('idev','Comment')?></label>
+        <div class="form-group o-h mb-0">
+          <label class="control-label col-lg-4 p-0 text-semibold"><h6 class="text-semibold"><?=Yii::t('idev','Comment')?></h6></label>
+          <div class="col-lg-8">
+            <div class="checkbox checkbox-switch">
+              <label>
+                <input type="checkbox" name="Post[comment]" data-on-color="primary" data-off-color="default" data-on-text="<?=Yii::t('idev','Yes')?>" data-off-text="<?=Yii::t('idev','No')?>" class="switch">
+              </label>
+            </div>
+          </div>
+          <label><?=Yii::t('idev','Comment end date')?></label>
+          <select class="form-control" name="Post[comment_end_date]">
+            <option value="1">1 <?=Yii::t('idev','Day')?></option>
+            <option value="2">1 <?=Yii::t('idev','Week')?></option>
+            <option value="3">1 <?=Yii::t('idev','Month')?></option>
+            <option value="4">1 <?=Yii::t('idev','Year')?></option>
+          </select>
+        </div>
       </div>
       <div class="panel panel-flat">
         <button type="submit" class="btn btn-primary dropdown-toggle" submit="submit"><i class="icon-paperplane position-left"></i> <?=Yii::t('idev','Create')?></button>

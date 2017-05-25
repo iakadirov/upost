@@ -2,6 +2,7 @@
 namespace app\modules\aplledore\models;
 
 use Yii;
+use app\models\User;
 use app\models\Post;
 use app\models\PostContent;
 use app\models\Seo;
@@ -9,6 +10,7 @@ use app\models\PostTag;
 use app\models\Tag;
 use app\models\ThemaContent;
 use app\models\Category;
+use app\components\IdevFunctions;
 
 class AplledoreNews extends \yii\db\ActiveRecord{
 	public static function getPostList($limit, $offset=NULL){
@@ -50,9 +52,9 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 		}else{
 			$res['count'] = Post::find()->count();
 			if ($offset) {
-				$res['content'] = Post::find()->with('content','postCategory')->limit($limit)->offset($offset)->asArray()->all();
+				$res['content'] = Post::find()->with('content','category')->limit($limit)->offset($offset)->asArray()->all();
 			}else{
-				$res['content'] = Post::find()->with('content','postCategory')->limit($limit)->asArray()->all();
+				$res['content'] = Post::find()->with('content','category')->limit($limit)->asArray()->all();
 			}
 		}
 		return $res;
@@ -109,6 +111,9 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 			if(isset($post['id'])){
 				return self::editPost($post);
 			}else{
+				if(empty($post[2]['name']) && empty($post[2]['content'])){
+					$post = self::addCryl($post);
+				}
 				return self::createPost($post);
 			}
 		}else{
@@ -147,72 +152,69 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 	}
 
 	protected function createPost($post){
-		if (!empty($post[Yii::$app->params['default_lang']]['name'])) {
-			$content = new Post;
-			$content->date = time();
-			$content->update = time();
-			$content->status = 1;
-			if ($content->save()) {
-				foreach (Yii::$app->params['langs'] as $key => $value) {
-					$post_content = new PostContent;
-					$post_content->post_id = $content->id;
-					$post_content->language = $key;
-					if (empty($post[$key]['name'])) {
-						$post_content->name = $post[Yii::$app->params['default_lang']]['name'];
-					}else{
-						$post_content->name = $post[$key]['name'];
-					}
-					$post_content->excerpt = $post[$key]['excerpt'];
-					$post_content->content = $post[$key]['content'];
-					$post_content->image = $post['image'];
-					$post_content->save();
-					$post_seo = new Seo;
-					$post_seo->parent_id = $content->id;
-					$post_seo->type = 'post';
-					$post_seo->language = $key;
-					if (empty($post[$key]['name'])) {
-						$post_seo->title = $post[Yii::$app->params['default_lang']]['name'];
-					}else{
-						$post_seo->title = $post[$key]['name'];
-					}
-					$post_seo->keywords = $post[$key]['name'];
-					$post_seo->description = $post[$key]['name'];
-					$post_seo->save();
-				}
-				$cats = json_decode($post['category'],true);
-				if (count($cats) > 0) {
-					// PostCategory::deleteAll(['post_id'=>$content->id]);
-					$ids = [];
-					foreach ($cats as $key => $value) {
-						$ids[] = [$content->id, $value];
-					}
-					Yii::$app->db->createCommand()->batchInsert('post_category', ['post_id', 'category_id'], $ids)->execute();
-				}else{
-					PostCategory::deleteAll(['post_id'=>$content->id]);
-				}
-				$tagOld = json_decode($post['tagoldlist'],true);
-				$tagNew = json_decode($post['tagnewlist'],true);
-				$tag = [];
-				if(count($tagOld) > 0){
-					foreach ($tagOld as $key => $value) {
-						$tag[] = [$content->id, $key];
-					}
-				}else{
-					PostTag::deleteAll(['post_id'=>$content->id]);
-				}
-				if(count($tagNew) > 0){
-					$res = self::createTags($tagNew);
-					foreach ($res as $key => $value) {
-						$tag[] = [$content->id, $value];
-					}
-				}
-				if (count($tag) > 0) {
-					Yii::$app->db->createCommand()->batchInsert('post_tag', ['post_id', 'tag_id'], $tag)->execute();
-				}
-				return true;
-			}else{
-				return false;
+		$content = new Post;
+		$content->date = time();
+		$content->update = time();
+		$content->category_id = $post['category_id'];
+		$content->thema_id = $post['thema_id'];
+		$content->type = Post::POST_TYPE_NEWS;
+		if(isset($post['character'])){$content->character = 1;}
+		if(isset($post['subscribe'])){$content->subscribe = 1;}
+		if(isset($post['priority'])){$content->priority = 1;}
+		if(isset($post['funny'])){$content->funny = 1;}
+		if(isset($post['pr']) && User::isAdmin()){
+			$content->pr = 1;
+			$arr = explode(':', $post['pr_time']);
+			$prDate = strtotime($post['pr_date'])+($arr[0]*3600)+($arr[1]*60);
+			$content->pr_end_date = $prDate;
+		}
+		if(User::isAdmin()){$content->status = 1;}
+		$content->author = Yii::$app->user->identity->id;
+		if(isset($post['comment'])){
+			$content->comment = 1;
+			$content->comment_end_date = $content->getCommentEndDate($post['comment_end_date']);
+		}
+		if($content->save()){
+			foreach (Yii::$app->params['langs'] as $key => $value) {
+				$post_content = new PostContent;
+				$post_content->post_id = $content->id;
+				$post_content->language = $key;
+				$post_content->name = $post[$key]['name'];
+				$post_content->excerpt = $post[$key]['excerpt'];
+				$post_content->content = $post[$key]['content'];
+				$post_content->image = $post['image'];
+				$post_content->save();
+				$post_seo = new Seo;
+				$post_seo->parent_id = $content->id;
+				$post_seo->type = 'post';
+				$post_seo->language = $key;
+				$post_seo->title = $post[$key]['name'];
+				$post_seo->keywords = $post[$key]['name'];
+				$post_seo->description = $post[$key]['name'];
+				$post_seo->save();
 			}
+			$tagOld = json_decode($post['tagoldlist'],true);
+			$tagNew = json_decode($post['tagnewlist'],true);
+			$tag = [];
+			if(count($tagOld) > 0){
+				foreach ($tagOld as $key => $value) {
+					$tag[] = [$content->id, $key];
+				}
+			}else{
+				PostTag::deleteAll(['post_id'=>$content->id]);
+			}
+			if(count($tagNew) > 0){
+				$res = self::createTags($tagNew);
+				foreach ($res as $key => $value) {
+					$tag[] = [$content->id, $value];
+				}
+			}
+			if (count($tag) > 0) {
+				Yii::$app->db->createCommand()->batchInsert('post_tag', ['post_id', 'tag_id'], $tag)->execute();
+			}
+			return true;
+		}else{
+			return false;
 		}
 		return false;
 	}
@@ -285,5 +287,12 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 			}
 		}
 		return $ids;
+	}
+
+	protected function addCryl($post){
+		$post[2]['name'] = IdevFunctions::translit($post[1]['name']);
+		$post[2]['content'] = IdevFunctions::translit($post[1]['content']);
+		$post[2]['excerpt'] = IdevFunctions::translit($post[1]['excerpt']);
+		return $post;
 	}
 }

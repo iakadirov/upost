@@ -24,18 +24,22 @@
         </tr>
       </thead>
       <tbody id="ajaxPostContent">
-      	<?php for ($id=0; $id < 20; $id++):?>
+      	<?php foreach ($data['content'] as $item): ?>
 	        <tr>
-	          <td>Eshmat</td>
-	          <td><a href="#">Siyosat</a></td>
-	          <td><a href="#">Frank-Valter Shtaynmayer Germaniya prezidenti etib saylandi</a></td>
-	          <td>14:45, 02.03.2016</td>
-	          <td><span class="label label-default">Oddiy</span></td>
+	          <td>Thema</td>
+	          <td><?=!empty($item['category'])?'<a href='.IdevFunctions::to('/category/'.$item['category']['category_id']).'>'.$item['category']['name'].'</a>':Yii::t('idev','No')?></td>
+	          <td><a href="<?=IdevFunctions::to('/news/edit/'.$item['id'])?>"><?=$item['content']['name']?></a></td>
+	          <td><?=date('H:i d-m-Y',$item['date'])?></td>
+	          <?php if ($item['character'] == 1): ?>
+	          	<td><span class="label label-danger">Muhim</span></td>
+	          <?php else: ?>
+	          	<td><span class="label label-default">Oddiy</span></td>
+	          <?php endif ?>
 	          <td class="text-center">
-	            <span data-action="checkbox" data-id="<?=$id?>"><input type="checkbox" class="checkbox <?=$id==5?'checked':''?>" id="checkbox_post_<?=$id;?>" <?=$id==5?'checked':''?>><label for="checkbox_post_<?=$id?>"></label></span>
+	            <span data-action="checkbox" data-id="<?=$item['id']?>"><input type="checkbox" class="checkbox" id="checkbox_post_<?=$item['id'];?>" <?=$item['status']==1?'checked':''?>><label for="checkbox_post_<?=$item['id']?>"></label></span>
 	          </td>
 	        </tr>
-	      <?php endfor; ?>
+      	<?php endforeach ?>
       </tbody>
     </table>
     <div class="col-12 postPagination">

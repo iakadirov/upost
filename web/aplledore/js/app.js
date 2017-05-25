@@ -100,6 +100,14 @@ $(function() {
     selector: '.content_edit',
     language: 'ru',
     forced_root_block : false,
+    // forced_root_block_attrs: {
+    //   'class': 'myclass',
+    //   'data-something': 'my data'
+    // },
+    // invalid_styles: 'color font-size',
+    valid_classes: {
+      'img': 'image_class', // Global classes
+    },
     browser_spellcheck: true,
     theme : "modern",
     menubar: false,
@@ -178,26 +186,27 @@ $(function() {
     ],
   });
 
-  $(document).on('click', '.pasteImages span.fa-remove', function(){
+  $(document).on('click', '.pasteImages span.icon-cross', function(){
     $(this).parent().children('input').val('');
     $(this).parent().children('.minyatura').html($('.pasteImages .minyatura').attr('title'));
     $(this).remove();
     return false;
   });
   $(document).on('click', '.pasteImages', function(){
+    $('#mediaModalContent').modal('show');
     $.ajax({
-      url: "/idev/media/load-media-image-content",
+      url: "/"+url[3]+"/media/load-media-image-content",
       method: "POST",
       data:{'input':'#'+$(this).attr('id'),'type':'minyatura'},
       dataType: "json",
       beforeSend: function(){
-        $('#mediaModalContent .preloader').removeClass('d-none');
+        // $('#mediaModalContent .preloader').removeClass('d-none');
       },
       success: function(data){
         $('#imageContent').html(data.content);
         $('#imageContent').append('<div class="preloader-imagelist d-none"><img src="'+$('.preloader img').attr("src")+'"></div>');
         $('.imagesContent').css({'height':$('#imageContent').height()+'px'});
-        $('#mediaModalContent .preloader').addClass('d-none');
+        // $('#mediaModalContent .preloader').addClass('d-none');
         $('#'+data.pagination.id).dsPagination();
       },
       error: function(){
@@ -213,10 +222,10 @@ $(function() {
       $($(this).data('label')).val($(this).data('content'));
     }
     if ($(this).data('type') == 'minyatura') {
-      $($(this).data('label')+' span.fa-remove').remove();
-      $($(this).data('label')).append('<span class="fa fa-remove"></span>');
+      $($(this).data('label')+' span.icon-cross').remove();
+      $($(this).data('label')).append('<span class="icon-cross"></span>');
       $($(this).data('label')+' input').val($(this).data('image-id'));
-      $($(this).data('label')+' div.minyatura').html('<img class="img-fluid" src="'+$(this).data('content')+'">');
+      $($(this).data('label')+' div.minyatura').html('<img class="img-responsive" src="'+$(this).data('content')+'">');
     }
     return false;
   });
@@ -224,7 +233,7 @@ $(function() {
   $('body').addClass('no-transitions');
 
   $(document).on('click', '.dropdown-content', function (e) {
-      e.stopPropagation();
+    e.stopPropagation();
   });
 
   // Disabled links
