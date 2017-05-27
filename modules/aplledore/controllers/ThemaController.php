@@ -5,6 +5,18 @@ use app\modules\aplledore\models\AplledoreThema;
 use app\components\IdevFunctions;
 
 class ThemaController extends DevController{
+  public function beforeAction($action){
+    $arr = ['index'=>['index'],
+            'create'=>['index'],
+            'edit'=>['index'],
+            'delete'=>['delete']];
+    if(!$this->__hasRoleUser($arr,$action)){
+      $this->redirect(['/aplledore/default/error']);
+      return false;
+    };
+    return parent::beforeAction($action);
+  }
+  
   public function actionIndex($id=NULL) {
   	$this->view->title = Yii::t('idev','Thems');
     $this->data['content'] = AplledoreThema::getContentList();

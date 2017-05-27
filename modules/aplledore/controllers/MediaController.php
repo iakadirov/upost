@@ -12,6 +12,13 @@ class MediaController extends DevController{
   public $paginationLimit = 20;
 
 	public function beforeAction($action){
+    $arr = ['index'=>['index','load-media-image-content','load-media-image-content-offset'],
+            'create'=>['upload'],
+            'delete'=>['delete']];
+    if(!$this->__hasRoleUser($arr,$action)){
+      $this->redirect(['/aplledore/default/error']);
+      return false;
+    };
     $isJsonReturn = ['load-media-image-content','load-media-image-content-offset','upload'];
     if(in_array($action->id, $isJsonReturn)){
 		  Yii::$app->response->format = Response::FORMAT_JSON;

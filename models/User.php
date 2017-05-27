@@ -23,7 +23,7 @@ class User extends ActiveRecord implements IdentityInterface{
     $query = 'SELECT * FROM `user_role` AS `ur` INNER JOIN `roles`AS`r` ON `ur`.`role_id`=`r`.`id` WHERE `ur`.`user_id`='.$id.' ';
     $rols = UserRole::findBySql($query)->asArray()->all();
     foreach ($rols as $rol) {
-      $user->rols[] = $rol['controller'].'/'.$rol['action'];
+      $user->rols[$rol['controller']][] = $rol['action'];
     }
     return $user;
   }

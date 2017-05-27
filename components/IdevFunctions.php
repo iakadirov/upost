@@ -50,6 +50,14 @@ class IdevFunctions{
 		}
 	}
 
+	public static function isActiveItem($url,$text){
+		if(Yii::$app->controller->id.'/'.Yii::$app->controller->action->id == $url){
+			return $text;
+		}else{
+			return "";
+		}
+	}
+
 	public static function setSuccessFlash($text){
 		Yii::$app->session->setFlash('success',$text);
 	}

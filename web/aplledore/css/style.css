@@ -85,5 +85,8 @@
 .pasteImages span.icon-cross{position: absolute;top: 5px;right: 5px;display: block;font-size: 16px;cursor: pointer;color: #fff;padding: 8px;background-color: #000;}
 #newsPostList thead tr th:first-child{width:35px;}
 #newsPostList .postAuthor{width: 100px;}
+#newsPostList .postActions{width:80px;}
+#newsPostList .postStatus{width:60px;}
+.postPriority span{cursor:pointer;}
 
 

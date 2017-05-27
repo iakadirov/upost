@@ -5,6 +5,17 @@ use app\modules\aplledore\models\AplledoreCategory;
 use app\components\IdevFunctions;
 
 class CategoryController extends DevController{
+  public function beforeAction($action){
+    $arr = ['index'=>['index'],
+            'create'=>['index'],
+            'edit'=>['index'],
+            'delete'=>['delete']];
+    if(!$this->__hasRoleUser($arr,$action)){
+      $this->redirect(['/aplledore/default/error']);
+      return false;
+    };
+    return parent::beforeAction($action);
+  }
   public function actionIndex($id=NULL) {
   	$this->view->title = 'Категории';
     $this->data['content'] = AplledoreCategory::getContentList();
@@ -38,7 +49,6 @@ class CategoryController extends DevController{
     // debug($this->data); die;
     return $this->template('index');
   }
-
   public function actionDelete($id) {
   	$this->view->title = 'Удалить';
     if (AplledoreCategory::deleteCategory($id)) {

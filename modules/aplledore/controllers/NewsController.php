@@ -9,8 +9,42 @@ use yii\data\ActiveDataProvider;
 use app\models\Post;
 
 class NewsController extends DevController{
+  public function beforeAction($action){
+    $arr = ['index'=>['index','new-post-list','load-media-image-content-offset','check-priority'],
+            'create'=>['create','get-tag-list','get-thema-list'],
+            'edit'=>['edit','get-tag-list','get-thema-list'],
+            'delete'=>['delete'],
+            'status'=>['check-status']];
+    if(!$this->__hasRoleUser($arr,$action)){
+      $this->redirect(['/aplledore/default/error']);
+      return false;
+    };
+    return parent::beforeAction($action);
+  }
   public function actionIndex() {
   	$this->view->title = 'Список посты';
+    if (isset($this->post['Sort']) && !empty($this->post['Sort'])) {
+      if(isset($this->post['Sort']['remove_sort'])){
+        Yii::$app->session->remove('sort_'.Yii::$app->controller->id);
+      }else{
+        $session = Yii::$app->session;
+        $arr = [];
+        $arr['category'] = $this->post['Sort']['category'];
+        $arr['author'] = $this->post['Sort']['author'];
+        if (!empty($this->post['Sort']['data_from'])) {
+          $arr['data_from'] = strtotime($this->post['Sort']['data_from']);
+        }else{
+          $arr['data_from'] = 0;
+        }
+        if (!empty($this->post['Sort']['data_to'])) {
+          $arr['data_to'] = strtotime($this->post['Sort']['data_to']);
+        }else{
+          $arr['data_to'] = 0;
+        }
+        $session['sort_'.Yii::$app->controller->id] = $arr;
+      }
+      return $this->redirect(['index']);
+    }
     $content = AplledoreNews::getPostList();
     $this->data['dataProvider'] = new ActiveDataProvider([
       'query' => $content['content'],
@@ -21,6 +55,20 @@ class NewsController extends DevController{
     $this->data['category'] = AplledoreNews::getCategory();
     $this->data['user'] = AplledoreNews::getUsers();
     return $this->template('index');
+  }
+
+  public function actionNewPostList() {
+    $this->view->title = 'Список новых постов';
+    $content = AplledoreNews::getNewPostList();
+    $this->data['dataProvider'] = new ActiveDataProvider([
+      'query' => $content,
+      'pagination' => [
+          'defaultPageSize' => 15,
+      ],
+    ]);
+    $this->data['category'] = AplledoreNews::getCategory();
+    $this->data['user'] = AplledoreNews::getUsers();
+    return $this->template('new-post-list');
   }
 
   public function actionCreate() {
@@ -65,6 +113,22 @@ class NewsController extends DevController{
   public function actionGetThemaList(){
     if ($this->isAjax) {
       return AplledoreNews::getSearchThemaList($this->post['name']); 
+    }else{
+      return $this->goIndex();
+    }
+  }
+
+  public function actionCheckStatus(){
+    if($this->isAjax){
+      return AplledoreNews::checkStatus($this->post['action'],$this->post['id']);
+    }else{
+      return $this->goIndex();
+    }
+  }
+
+  public function actionCheckPriority(){
+    if($this->isAjax){
+      return AplledoreNews::checkPriority($this->post['action'],$this->post['id']);
     }else{
       return $this->goIndex();
     }

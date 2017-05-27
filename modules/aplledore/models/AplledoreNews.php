@@ -16,38 +16,31 @@ use app\components\IdevFunctions;
 class AplledoreNews extends \yii\db\ActiveRecord{
 	public static function getPostList(){
 		if (Yii::$app->session->has('sort_'.Yii::$app->controller->id)) {
-			$session = Yii::$app->session;
+			$session = Yii::$app->session->get('sort_'.Yii::$app->controller->id);
 			$post = Post::find();
-			if ( $session['sort_'.Yii::$app->controller->id]['data_from'] > 0 ) {
-				$post->where(['>=','date',$session['sort_'.Yii::$app->controller->id]['data_from']]);
+			if ( $session['data_from'] > 0 ) {
+				$post->where(['>=','date',$session['data_from']]);
 			}else{
 				$post->where(['>=','date',0]);
 			}
-			if ( $session['sort_'.Yii::$app->controller->id]['data_to'] > 0 ) {
-				$post->andWhere(['<=','date',$session['sort_'.Yii::$app->controller->id]['data_to']]);
+			if ( $session['data_to'] > 0 ) {
+				$post->andWhere(['<=','date',$session['data_to']]);
 			}
-			if( $session['sort_'.Yii::$app->controller->id]['status'] == 'active' ){
-				$post->andWhere(['status'=>1]);
-			}elseif( $session['sort_'.Yii::$app->controller->id]['status'] == 'deactive' ){
-				$post->andWhere(['status'=>1]);
+			if ($session['category'] > 0) {
+				$post->andWhere(['category_id'=>$session['category']]);
 			}
-			if ($session['sort_'.Yii::$app->controller->id]['category'] > 0) {
-				$cats = PostCategory::find()->where(['category_id'=>$session['sort_'.Yii::$app->controller->id]['category']]);
-				if (!empty($cats)) {
-					$arr = [];
-					foreach ($cats as $item) {
-						$arr[] = $item['post_id'];
-					}
-					$post->andWhere(['in','id',$arr]);
-				}else{
-					return 0;
-				}
+			if ($session['author'] > 0) {
+				$post->andWhere(['author_id'=>$session['author']]);
 			}
-			$res['content'] = $post->with('content','category');
+			$res['content'] = $post->with('content','category','creator','editor');
 		}else{
 			$res['content'] = Post::find()->with('content','category','creator','editor');
 		}
 		return $res;
+	}
+
+	public static function getNewPostList(){
+		return Post::find()->with('content','category','creator','editor')->where(['status'=>'0']);
 	}
 
 	public static function getContent($id){
@@ -60,16 +53,6 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 
 	public static function getUsers(){
 		return User::getAllUsers();
-	}
-
-	public static function getContentByIds($ids){
-		if (is_array($ids) && count($ids) > 0) {
-			$content = Post::find()->select('id')->with('content')->where(['in','id',$ids])->asArray()->all();
-			/* нужно проверить права доступ */
-			return json_encode(['res'=>'success','text'=>Yii::t('idev','confirm delete'),'button'=>Yii::t('idev','delete')]);
-		}else{
-			return json_encode(['res'=>'info','text'=>Yii::t('idev','checked posts'),'button'=>Yii::t('idev','close')]);
-		}
 	}
 
 	public static function getSearchTagList($name,$ids=NULL){
@@ -99,10 +82,10 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 		return json_encode($arr);
 	}
 
-	public static function getSortContent(){
+	/*public static function getSortContent(){
 		$content['categorys'] = Category::find()->select('category.id')->with('contentName')->asArray()->all();
 		return $content;
-	}
+	}*/
 
 	public static function contentLoad($post){
 		if(!empty($post)){
@@ -133,20 +116,41 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 		}
 	}
 
-	public static function checkStatus($action,$id){
+	public static function checkStatus($action, $id){
 		$post = Post::findOne($id);
-		if ($action == 'active') {
-			$post->status = 1;
-		}elseif($action == 'deactive'){
-			$post->status = 0;
-		}elseif($action == 'delete'){
-			$post->status = -1;
+		if(!empty($post)){
+			if($post->author_id != Yii::$app->user->identity->id && !User::isAdmin()){
+				return json_encode(['res'=>'error']);
+			}
+			if($action == 'active' && User::isAdmin()){
+				$post->status = 1;
+			}elseif($action == 'deactive' && User::isAdmin()){
+				$post->status = 0;
+			}elseif($action == 'delete'){
+				$post->status = -1;
+			}
+			if($post->save()){
+				return json_encode(['res'=>'success']);
+			}
 		}
-		if($post->save()){
-			return true;
-		}else{
-			return false;
+		return json_encode(['res'=>'error']);
+	}
+
+	public static function checkPriority($action, $id){
+		$post = Post::findOne($id);
+		if(!empty($post)){
+			if($action == 'important'){
+				$post->priority = 1;
+				$text = Yii::t('idev','Important');
+			}else{
+				$post->priority = 0;
+				$text = Yii::t('idev','Plain');
+			}
+			if($post->save()){
+				return json_encode(['res'=>'success','text'=>$text]);
+			}
 		}
+		return json_encode(['res'=>'error']);
 	}
 
 	protected function createPost($post){
@@ -154,8 +158,8 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 		$content->date = time();
 		$content->update = time();
 		$content->category_id = $post['category_id'];
+		$content->author_id = Yii::$app->user->identity->id;
 		$content->thema_id = $post['thema_id'];
-		$content->thema_id = Yii::$app->user->identity->id;
 		$content->type = Post::POST_TYPE_NEWS;
 		if(isset($post['character'])){$content->character = 1;}
 		if(isset($post['subscribe'])){$content->subscribe = 1;}

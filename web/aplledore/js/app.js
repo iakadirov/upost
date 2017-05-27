@@ -8,6 +8,40 @@ $(function() {
 
   var url = location.href.split('/'), mcUrl = '/'+url[3]+'/'+url[4];
 
+  $(document).on('click','[data-action="checkbox"] input',function(){
+    var action = 'deactive';
+    if ($(this).prop('checked')) {
+      action = 'active';
+    }
+    $.post(mcUrl+'/check-status',{action:action,id:$(this).parent().data('id')},function(res){
+      if (res.res == 'success') {
+        return true;
+      }else{
+        location.reload();
+      }
+    },'json');
+  });
+
+  $(document).on('click','.postPriority span.label',function(){
+    var action = 'plain', thisis = $(this);
+    if ($(this).hasClass('label-default')) {
+      action = 'important';
+    }
+    $.post(mcUrl+'/check-priority',{action:action,id:$(this).data('id')},function(res){
+      if(res.res == 'success'){
+        if(action == 'plain'){
+          thisis.removeClass('label-danger').addClass('label-default');
+          thisis.text(res.text);
+        }else{
+          thisis.removeClass('label-default').addClass('label-danger');
+          thisis.text(res.text);
+        }
+      }else{
+        location.reload();
+      }
+    },'json');
+  });
+
   $(document).on('click', '#tagCreateNew #createNewTag', function(){
     if ($('#tagCreateNew input').val() != ' ' && $('#tagCreateNew input').val().length != 0) {
       $('.tagList').append('<span class="badge badge-default" data-id="0" data-text="'+$('#tagCreateNew input').val()+'" data-lang="'+$('#tagCreateNew select').val()+'">'+$('#tagCreateNew input').val()+" ("+$('#tagCreateNew select option:selected').text()+")"+'<i class="close">&times</i></span>');
@@ -229,6 +263,11 @@ $(function() {
     return false;
   });
 
+  $(document).on('click','#removeSort',function(){
+    $('#contentSort').append('<input type="hidden" name="Sort[remove_sort]" value="1">');
+    $(this).prev().click();
+  })
+
   $('body').addClass('no-transitions');
 
   $(document).on('click', '.dropdown-content', function (e) {
@@ -247,17 +286,11 @@ $(function() {
   });
 
 
-
-
-  // ========================================
-  //
-  // Element controls
-  //
-  // ========================================
-
-
-  // Reload elements
-  // -------------------------
+  function containerHeight() {
+      var availableHeight = $(window).height() - $('.page-container').offset().top - $('.navbar-fixed-bottom').outerHeight();
+      $('.page-container').attr('style', 'min-height:' + availableHeight + 'px');
+  }
+  containerHeight();
 
   // Panels
   $('.panel [data-action=reload]').click(function (e) {
