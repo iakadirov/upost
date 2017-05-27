@@ -21,6 +21,7 @@ class NewsController extends DevController{
     };
     return parent::beforeAction($action);
   }
+
   public function actionIndex() {
   	$this->view->title = 'Список посты';
     if (isset($this->post['Sort']) && !empty($this->post['Sort'])) {
@@ -132,5 +133,18 @@ class NewsController extends DevController{
     }else{
       return $this->goIndex();
     }
+  }
+
+  /* AUTHORS */
+  public function actionAuthors($id){
+    $this->view->title = Yii::t('idev','Authors');
+    $this->data['title'] = Yii::t('idev','Create author');
+    $this->data['authors'] = AplledoreNews::getAuthors();
+    // debug($this->data); die;
+    return $this->template('authors');
+  }
+
+  public function actionDeleteAuthor($id){
+    echo $id;
   }
 }

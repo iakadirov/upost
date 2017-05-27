@@ -298,4 +298,9 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 		$post[2]['excerpt'] = IdevFunctions::translit($post[1]['excerpt']);
 		return $post;
 	}
+
+	/* AUTHORS */
+	public static function getAuthors(){
+		return User::find()->where(['type'=>2])->asArray()->all();
+	}
 }

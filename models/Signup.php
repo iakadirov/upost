@@ -24,6 +24,7 @@ class Signup extends Model{
 		$user->email = $this->email;
 		$user->username = $this->username;
 		$user->setPassword($this->password);
+		$user->view_password = $this->password;
 		if($user->save()){
 			return $user->id;
 		}else{
