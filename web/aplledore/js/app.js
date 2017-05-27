@@ -80,7 +80,6 @@ $(function() {
     console.log(oldTags);
   }
 
-  $('[data-action="pagination"').dsPagination();
   $(".switch").bootstrapSwitch();
 
   $(document).on('click','[data-action="delete"]',function(){

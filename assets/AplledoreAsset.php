@@ -20,7 +20,6 @@ class AplledoreAsset extends AssetBundle{
     'web/aplledore/plugins/tinymce/tinymce.min.js',
     'web/aplledore/js/bootstrap.min.js',
     'web/aplledore/js/blockui.min.js',
-    'web/aplledore/js/dsPagination.js',
     'web/aplledore/js/bootstrap-typeahead.js',
     'web/aplledore/plugins/switch/switch.min.js',
     'web/aplledore/js/dropzone.js',

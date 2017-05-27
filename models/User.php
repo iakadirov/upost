@@ -48,6 +48,10 @@ class User extends ActiveRecord implements IdentityInterface{
     }
   }
 
+  public static function getAllUsers(){
+    return self::find()->select('id,username,type')->asArray()->all();
+  }
+
   public static function findIdentityByAccessToken($token, $type = null){
 
   }

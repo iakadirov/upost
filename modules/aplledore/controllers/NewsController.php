@@ -5,13 +5,21 @@ use app\modules\aplledore\models\AplledoreNews;
 use app\modules\aplledore\models\AplledoreCategory;
 use app\modules\aplledore\models\AplledoreThema;
 use app\components\IdevFunctions;
+use yii\data\ActiveDataProvider;
+use app\models\Post;
 
 class NewsController extends DevController{
   public function actionIndex() {
   	$this->view->title = 'Список посты';
-    $this->data['limit'] = 15;
-    $content = AplledoreNews::getPostList($this->data['limit']);
-    $this->data['content'] = $content['content'];
+    $content = AplledoreNews::getPostList();
+    $this->data['dataProvider'] = new ActiveDataProvider([
+      'query' => $content['content'],
+      'pagination' => [
+          'defaultPageSize' => 15,
+      ],
+    ]);
+    $this->data['category'] = AplledoreNews::getCategory();
+    $this->data['user'] = AplledoreNews::getUsers();
     return $this->template('index');
   }
 
@@ -31,6 +39,9 @@ class NewsController extends DevController{
 
   public function actionEdit($id) {
   	$this->view->title = 'Редактировать';
+    $this->data['content'] = AplledoreNews::getContent($id);
+    debug($this->data);
+    die;
     return $this->template('edit');
   }
 

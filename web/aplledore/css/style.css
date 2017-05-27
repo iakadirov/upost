@@ -79,6 +79,11 @@
 .closeModal{position: absolute;top:10px;right:10px;width: 30px;cursor: pointer;opacity: 1;-webkit-transition: all 0.3s ease-in-out; -moz-transition: all 0.3s ease-in-out; -o-transition: all 0.3s ease-in-out; transition: all 0.3s ease-in-out;}
 .closeModal svg{fill: #000;}
 .closeModal:hover svg{fill: #000;}
+#sortNews .modal-content{height: auto;}
 .pasteImages{width:100%;padding: 5px;background-color: #fff;border-color: rgb(0, 19, 19);position: relative;}
 .pasteImages:hover,.pasteImages:focus{text-decoration: none;color: #0275d8;border-color: rgb(0, 19, 19);}
 .pasteImages span.icon-cross{position: absolute;top: 5px;right: 5px;display: block;font-size: 16px;cursor: pointer;color: #fff;padding: 8px;background-color: #000;}
+#newsPostList thead tr th:first-child{width:35px;}
+#newsPostList .postAuthor{width: 100px;}
+
+

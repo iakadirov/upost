@@ -10,10 +10,11 @@ use app\models\PostTag;
 use app\models\Tag;
 use app\models\ThemaContent;
 use app\models\Category;
+use app\models\CategoryContent;
 use app\components\IdevFunctions;
 
 class AplledoreNews extends \yii\db\ActiveRecord{
-	public static function getPostList($limit, $offset=NULL){
+	public static function getPostList(){
 		if (Yii::$app->session->has('sort_'.Yii::$app->controller->id)) {
 			$session = Yii::$app->session;
 			$post = Post::find();
@@ -31,7 +32,7 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 				$post->andWhere(['status'=>1]);
 			}
 			if ($session['sort_'.Yii::$app->controller->id]['category'] > 0) {
-				$cats = PostCategory::find()->where(['category_id'=>$session['sort_'.Yii::$app->controller->id]['category']])->asArray()->all();
+				$cats = PostCategory::find()->where(['category_id'=>$session['sort_'.Yii::$app->controller->id]['category']]);
 				if (!empty($cats)) {
 					$arr = [];
 					foreach ($cats as $item) {
@@ -42,26 +43,23 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 					return 0;
 				}
 			}
-			$count = clone($post);
-			$res['count'] = $count->count();
-			if ($offset) {
-				$res['content'] = $post->with('content','postCategory')->limit($limit)->offset($offset)->asArray()->all();
-			}else{
-				$res['content'] = $post->with('content','postCategory')->limit($limit)->asArray()->all();
-			}
+			$res['content'] = $post->with('content','category');
 		}else{
-			$res['count'] = Post::find()->count();
-			if ($offset) {
-				$res['content'] = Post::find()->with('content','category')->limit($limit)->offset($offset)->asArray()->all();
-			}else{
-				$res['content'] = Post::find()->with('content','category')->limit($limit)->asArray()->all();
-			}
+			$res['content'] = Post::find()->with('content','category','creator','editor');
 		}
 		return $res;
 	}
 
 	public static function getContent($id){
-		return Post::find()->with('contents','categorys','tags')->where(['id'=>$id])->asArray()->one();
+		return Post::find()->with('contents','tags')->where(['id'=>$id])->asArray()->one();
+	}
+
+	public static function getCategory(){
+		return CategoryContent::find()->select('category_id,name,language')->where(['language'=>Yii::$app->params['admin_lang']])->asArray()->all();
+	}
+
+	public static function getUsers(){
+		return User::getAllUsers();
 	}
 
 	public static function getContentByIds($ids){
@@ -157,6 +155,7 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 		$content->update = time();
 		$content->category_id = $post['category_id'];
 		$content->thema_id = $post['thema_id'];
+		$content->thema_id = Yii::$app->user->identity->id;
 		$content->type = Post::POST_TYPE_NEWS;
 		if(isset($post['character'])){$content->character = 1;}
 		if(isset($post['subscribe'])){$content->subscribe = 1;}
@@ -169,7 +168,7 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 			$content->pr_end_date = $prDate;
 		}
 		if(User::isAdmin()){$content->status = 1;}
-		$content->author = Yii::$app->user->identity->id;
+		$content->update_author_id = Yii::$app->user->identity->id;
 		if(isset($post['comment'])){
 			$content->comment = 1;
 			$content->comment_end_date = $content->getCommentEndDate($post['comment_end_date']);

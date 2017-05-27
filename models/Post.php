@@ -11,7 +11,7 @@ class Post extends \yii\db\ActiveRecord{
 
   public function rules(){
     return [
-      [['category_id', 'type', 'date', 'update', 'author', 'comment_end_date','pr_end_date','character', 'subscribe', 'priority', 'pr', 'funny', 'status', 'comment'], 'integer'],
+      [['category_id','thema_id','author_id', 'type', 'date', 'update', 'update_author_id', 'comment_end_date','pr_end_date','character', 'subscribe', 'priority', 'pr', 'funny', 'status', 'comment'], 'integer'],
     ];
   }
 
@@ -29,10 +29,28 @@ class Post extends \yii\db\ActiveRecord{
                 ->where(['post_content.language'=>Yii::$app->params['admin_lang']]);
   }
 
+  public function getContents(){
+    return $this->hasOne(PostContent::classname(),['post_id' => 'id']);
+  }
+
+  public function getTags(){
+    return $this->hasMany(PostTag::classname(),['post_id' => 'id'])->with('tags');
+  }
+
   public function getCategory(){
     return $this->hasOne(CategoryContent::classname(),['category_id' => 'category_id'])
                 ->select(['category_content.name','category_content.category_id','category_content.language'])
                 ->where(['category_content.language'=>Yii::$app->params['admin_lang']]);
+  }
+
+  public function getCreator(){
+    return $this->hasOne(User::classname(),['id' => 'author_id'])
+                ->select(['user.username','user.id','user.type']);
+  }
+
+  public function getEditor(){
+    return $this->hasOne(User::classname(),['id' => 'update_author_id'])
+                ->select(['user.username','user.id','user.type']);
   }
 
   public function attributeLabels(){

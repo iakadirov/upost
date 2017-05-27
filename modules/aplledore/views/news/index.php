@@ -1,6 +1,13 @@
 <?php 
 	use app\components\IdevFunctions;
 	use yii\widgets\ActiveForm;
+	use yii\grid\GridView;
+	use app\models\User;
+
+if(Yii::$app->session->has('sort_'.Yii::$app->controller->id)){
+	$session = Yii::$app->session->get('sort_'.Yii::$app->controller->id);
+	// $sortCategory = ['ca']
+}
 ?>	
 <div class="content">
   <div class="panel panel-flat">
@@ -12,39 +19,103 @@
         </ul>
       </div>
     </div>
-    <table class="table datatable-basic">
-      <thead>
-        <tr>
-          <th><?=Yii::t('idev','Author')?></th>
-          <th><?=Yii::t('idev','Category')?></th>
-          <th><?=Yii::t('idev','Title')?></th>
-          <th><?=Yii::t('idev','Date')?></th>
-          <th><?=Yii::t('idev','Prioritet')?></th>
-          <th class="text-center"><?=Yii::t('idev','Status')?></th>
-        </tr>
-      </thead>
-      <tbody id="ajaxPostContent">
-      	<?php foreach ($data['content'] as $item): ?>
-	        <tr>
-	          <td>Thema</td>
-	          <td><?=!empty($item['category'])?'<a href='.IdevFunctions::to('/category/'.$item['category']['category_id']).'>'.$item['category']['name'].'</a>':Yii::t('idev','No')?></td>
-	          <td><a href="<?=IdevFunctions::to('/news/edit/'.$item['id'])?>"><?=$item['content']['name']?></a></td>
-	          <td><?=date('H:i d-m-Y',$item['date'])?></td>
-	          <?php if ($item['character'] == 1): ?>
-	          	<td><span class="label label-danger">Muhim</span></td>
-	          <?php else: ?>
-	          	<td><span class="label label-default">Oddiy</span></td>
-	          <?php endif ?>
-	          <td class="text-center">
-	            <span data-action="checkbox" data-id="<?=$item['id']?>"><input type="checkbox" class="checkbox" id="checkbox_post_<?=$item['id'];?>" <?=$item['status']==1?'checked':''?>><label for="checkbox_post_<?=$item['id']?>"></label></span>
-	          </td>
-	        </tr>
-      	<?php endforeach ?>
-      </tbody>
-    </table>
-    <div class="col-12 postPagination">
-	    <nav data-action="pagination" id="postPagination" data-limit="11" data-count="634" data-content="#ajaxPostContent" data-url="<?=IdevFunctions::to('/post/get-post-in-ajax');?>" data-preloader="#preloader-post" data-left-content='{}' class='d-table mx-auto'></nav>
-	  </div>
+    <!-- <#?= debug(app\models\Post::find()->with('content','category')->all())?> -->
+    <?= GridView::widget([
+		    'dataProvider' => $data['dataProvider'],
+        'options'=>['id'=>'newsPostList'],
+        'tableOptions' => [
+            'class' => 'table datatable-basic',
+        ],
+        'rowOptions'=>function ($model, $key, $index, $grid){
+	        return [
+            'data-id'=>$model->id,
+	        ];
+		    },
+		    'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+            /*[
+	            'attribute'=>'author',
+	            'label'=>Yii::t('idev','Author'),
+	            'contentOptions' =>function ($model, $key, $index, $column){
+	                return ['class' => 'postAuthor'];
+	            },
+	            'content'=>function($data){
+	            		if($data->creator->type==User::TYPE_ADMIN){
+	            			return Yii::t('idev','Admin');
+	            		}else{
+	                	return '<a href="'.IdevFunctions::to('/authors/'.$data->author_id).'">'.$data->creator->username.'</a>';
+	            		}
+	            }
+		        ],*/
+            [
+	            'label'=>Yii::t('idev','Category'),
+	            'contentOptions' =>function ($model, $key, $index, $column){
+	                return ['class' => 'postCategory'];
+	            },
+	            'content'=>function($data){
+	            		if(empty($data->category)){
+	            			return '<b>'.Yii::t('idev','No').'</b>';
+	            		}else{
+	                	return '<b><a href="'.IdevFunctions::to('/category/'.$data->category_id).'">'.$data->category->name.'</a></b>';
+	            		}
+	            }
+		        ],
+		        [
+	            'label'=>Yii::t('idev','Name'),
+	            'contentOptions' =>function ($model, $key, $index, $column){
+	                return ['class' => 'postName'];
+	            },
+	            'content'=>function($data){
+	            		return '<a href="'.IdevFunctions::to('/news/edit/'.$data->id).'">'.$data->content->name.'</a>';
+	            }
+		        ],
+		        [
+	            'label'=>Yii::t('idev','Date'),
+	            'contentOptions' =>function ($model, $key, $index, $column){
+	                return ['class' => 'postDate'];
+	            },
+	            'content'=>function($data){
+	            		if($data->creator->type==User::TYPE_ADMIN){
+	            			$creator = Yii::t('idev','Admin');
+	            		}else{
+	                	$creator = '<a href="'.IdevFunctions::to('/authors/'.$data->author_id).'">'.$data->creator->username.'</a>';
+	            		}
+	            		if($data->editor->type==User::TYPE_ADMIN){
+	            			$editor = Yii::t('idev','Admin');
+	            		}else{
+	                	$editor = '<a href="'.IdevFunctions::to('/authors/'.$data->author_id).'">'.$data->editor->username.'</a>';
+	            		}
+	            		return date('H:i d/m/Y', $data->date).' - <b>'.Yii::t('idev','Author').':</b> '.$creator.'<br/>'.date('H:i d/m/Y', $data->update).' - <b>'.Yii::t('idev','Editor').':</b> '.$editor;
+	            }
+		        ],
+		        [
+	            'label'=>Yii::t('idev','Priority'),
+	            'contentOptions' =>function ($model, $key, $index, $column){
+	                return ['class' => 'postPriority'];
+	            },
+	            'content'=>function($data){
+	            	if($data->priority == 1){
+	            		return '<span class="label label-danger">'.Yii::t('idev','Important').'</span>';
+	            	}else{
+	            		return '<span class="label label-default">'.Yii::t('idev','Plain').'</span>';	            		
+	            	}
+	            }
+		        ],
+		        [
+	            'label'=>Yii::t('idev','Status'),
+	            'contentOptions' =>function ($model, $key, $index, $column){
+	                return ['class' => 'postStatus'];
+	            },
+	            'content'=>function($data){
+	            	if($data->status == 1){
+	            		return '<span data-action="checkbox" data-id="'.$data->id.'"><input type="checkbox" class="checkbox" id="checkbox_post_'.$data->id.'" checked="checked"><label for="checkbox_post_'.$data->id.'"></label></span>';
+	            	}else{
+	            		return '<span data-action="checkbox" data-id="'.$data->id.'"><input type="checkbox" class="checkbox" id="checkbox_post_'.$data->id.'"><label for="checkbox_post_'.$data->id.'"></label></span>';
+	            	}
+	            }
+		        ],
+        ],
+		]);?>
   </div>
 </div>
 
@@ -53,7 +124,7 @@
 		<div class="modal-content modal-sm">
 			<div class="modal-header p-10">
 				<button type="button" class="close" data-dismiss="modal">×</button>
-				<h5 class="modal-title"><i class="icon-menu7"></i> &nbsp;Modal with icons</h5>
+				<h5 class="modal-title"><i class="icon-menu7"></i> Modal with icons</h5>
 			</div>
 			<div class="modal-body p-10">
 				<?php $form = ActiveForm::begin(['id'=>'newsSort']); ?>
@@ -61,12 +132,18 @@
 						<label class="m-0"><?=Yii::t('idev','Category')?></label>
 						<select class="form-control" name="Sort[category]">
 							<option value="0"><?=Yii::t('idev','No')?></option>
+							<?php foreach ($data['category'] as $key => $value): ?>
+								<option value="<?=$value['id']?>"><?=$value['name']?></option>
+							<?php endforeach ?>
 						</select>
 					</div>
 					<div class="form-group mb-10">
 						<label class="m-0"><?=Yii::t('idev','Author')?></label>
 						<select class="form-control" name="Sort[author]">
 							<option value="0"><?=Yii::t('idev','No')?></option>
+							<?php foreach ($data['user'] as $key => $value): ?>
+								<option value="<?=$value['id']?>"><?=$value['username']?></option>
+							<?php endforeach ?>
 						</select>
 					</div>
 					<div class="form-group mb-10 col-sm-6 pull-left pl-0 pr-5">
