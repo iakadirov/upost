@@ -5896,7 +5896,7 @@ button.close {
   filter: alpha(opacity=50);
 }
 .modal-header {
-  padding: 20px;
+  padding: 10px;
   border-bottom: 1px solid transparent;
 }
 .modal-header .close {
@@ -5908,10 +5908,10 @@ button.close {
 }
 .modal-body {
   position: relative;
-  padding: 20px;
+  padding: 10px;
 }
 .modal-footer {
-  padding: 20px;
+  padding: 10px;
   text-align: right;
   border-top: 1px solid transparent;
 }

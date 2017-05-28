@@ -130,7 +130,11 @@ class View extends \yii\base\View
      */
     public $jsFiles;
 
+    public $user;
+    /* User info */
+
     private $_assetManager;
+
 
 
     /**

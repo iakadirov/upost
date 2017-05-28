@@ -77,6 +77,7 @@ $config = [
       'showScriptName' => false,
       'rules' => [
         'login'=>'/site/login',
+        'logout'=>'/site/logout',
         '/aplledore/news/page/<page:\d+>'=>'/aplledore/news/index',
         '/aplledore/news/edit/<id:\d+>'=>'/aplledore/news/edit',
         '/aplledore/news/delete/<id:\d+>'=>'/aplledore/news/delete',

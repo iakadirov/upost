@@ -136,9 +136,21 @@ class NewsController extends DevController{
   }
 
   /* AUTHORS */
-  public function actionAuthors($id){
+  public function actionAuthors($id=NULL){
     $this->view->title = Yii::t('idev','Authors');
+    if($this->post['Author']){
+      if(AplledoreNews::contentAuthorLoad($this->post['Author'])){
+        IdevFunctions::setSuccessFlash(Yii::t('idev','Author is save'));
+      }else{
+        IdevFunctions::setErrorFlash(Yii::t('idev','Author is no save'));
+      }
+      return $this->redirect(['authors']);
+    }
     $this->data['title'] = Yii::t('idev','Create author');
+    if($id){
+      $this->data['content'] = AplledoreNews::getAuthor($id);
+      $this->data['title'] = Yii::t('idev','Edit author');
+    }
     $this->data['authors'] = AplledoreNews::getAuthors();
     // debug($this->data); die;
     return $this->template('authors');
@@ -146,5 +158,21 @@ class NewsController extends DevController{
 
   public function actionDeleteAuthor($id){
     echo $id;
+  }
+
+  public function actionGetAuthorRight(){
+    if($this->isAjax){
+      return json_encode(['content'=>$this->renderPartial('__author-right',['content'=>AplledoreNews::getAuthorRights($this->post['id'])])]);
+    }else{
+      if(isset($this->post['Role'])){
+        if(AplledoreNews::createRight($this->post['Role'])){
+          IdevFunctions::setSuccessFlash(Yii::t('idev','Author right is save'));
+        }else{
+          IdevFunctions::setErrorFlash(Yii::t('idev','Author right is no save'));
+        }
+        return $this->redirect(['authors']);
+      }
+      $this->goIndex();
+    }
   }
 }

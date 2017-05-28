@@ -3,6 +3,8 @@ namespace app\modules\aplledore\models;
 
 use Yii;
 use app\models\User;
+use app\models\UserRole;
+use app\models\Roles;
 use app\models\Post;
 use app\models\PostContent;
 use app\models\Seo;
@@ -119,12 +121,9 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 	public static function checkStatus($action, $id){
 		$post = Post::findOne($id);
 		if(!empty($post)){
-			if($post->author_id != Yii::$app->user->identity->id && !User::isAdmin()){
-				return json_encode(['res'=>'error']);
-			}
-			if($action == 'active' && User::isAdmin()){
+			if($action == 'active'){
 				$post->status = 1;
-			}elseif($action == 'deactive' && User::isAdmin()){
+			}elseif($action == 'deactive'){
 				$post->status = 0;
 			}elseif($action == 'delete'){
 				$post->status = -1;
@@ -302,5 +301,60 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 	/* AUTHORS */
 	public static function getAuthors(){
 		return User::find()->where(['type'=>2])->asArray()->all();
+	}
+
+	public static function getAuthor($id){
+		return User::find()->where(['id'=>$id])->asArray()->one();
+	}
+
+	public static function contentAuthorLoad($post){
+		if(empty($post['username'])||empty($post['email'])||empty($post['password'])){
+			return false;
+		}
+		if(isset($post['id'])){
+			$author = User::findOne($post['id']);
+			if(empty($author)) return false;
+		}else{
+			$author = new User();
+		}
+		$author->username = $post['username'];
+		$author->email = $post['email'];
+		$author->password = sha1($post['password']);
+		$author->view_password = $post['password'];
+		$author->first_name = $post['first_name'];
+		$author->last_name = $post['last_name'];
+		$author->status = $post['status'];
+		$author->type = User::TYPE_MODER;
+		if($author->save()){
+			return true;
+		}
+		return false;
+	}
+
+	public static function getAuthorRights($id){
+		$content['user'] = User::find()->select('id,first_name,last_name')->where(['id'=>$id])->asArray()->one();
+		$content['user_rols'] = [];
+		$user_rols = UserRole::find()->select('role_id')->where(['user_id'=>$id])->indexBy('role_id')->asArray()->all();
+		foreach ($user_rols as $role) {
+			$content['user_rols'][] = $role['role_id'];
+		}
+		$content['roles'] = Roles::find()->select('id,description')->indexBy('id')->asArray()->all();
+		return $content;
+	}
+
+	public static function createRight($role){
+		UserRole::deleteAll(['user_id'=>$role['user_id']]);
+		$arr = [];
+		foreach ($role['list'] as $key => $value) {
+			$arr[] = [$role['user_id'], $key];
+		}
+		if(!empty($arr)){
+			$db = Yii::$app->db->createCommand();
+			$db->batchInsert('user_role', ['user_id', 'role_id'], $arr);
+			if($db->execute()){
+				return true;
+			}
+		}
+		return false;
 	}
 }

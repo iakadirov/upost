@@ -1,8 +1,12 @@
 $(window).on('load', function() {
-    $('body').removeClass('no-transitions');
-    $('.mce-panel iframe').css({'height':$('div.mce-edit-area').height()+'px'});
+  $('body').removeClass('no-transitions');
+  $('.mce-panel iframe').css({'height':$('div.mce-edit-area').height()+'px'});
+  addCloseButtonInModal();
 });
 
+function addCloseButtonInModal(){
+  $('.closeModal').html('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 224.512 224.512" xml:space="preserve"><g><polygon points="224.507,6.997 217.521,0 112.256,105.258 6.998,0 0.005,6.997 105.263,112.254 0.005,217.512 6.998,224.512 112.256,119.24 217.521,224.512 224.507,217.512 119.249,112.254 "></polygon></g></svg>');
+}
 
 $(function() {
 
@@ -19,6 +23,15 @@ $(function() {
       }else{
         location.reload();
       }
+    },'json');
+  });
+
+  $(document).on('click','#createRightUser',function(e){
+    // alert($(this).data('id'));
+    $('#mediumModal').modal('show');
+    $.post(mcUrl+'/get-author-right',{id:$(this).data('id')},function(res){
+      $('#mediumModal .modal-content').html(res.content);
+      addCloseButtonInModal();
     },'json');
   });
 
@@ -126,8 +139,6 @@ $(function() {
     maxFilesize: dropzoneMaxSizeFile,
     maxFiles: 50
   });
-
-  $('.closeModal').html('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 224.512 224.512" xml:space="preserve"><g><polygon points="224.507,6.997 217.521,0 112.256,105.258 6.998,0 0.005,6.997 105.263,112.254 0.005,217.512 6.998,224.512 112.256,119.24 217.521,224.512 224.507,217.512 119.249,112.254 "></polygon></g></svg>');
 
   tinymce.init({
     selector: '.content_edit',
@@ -237,7 +248,7 @@ $(function() {
       },
       success: function(data){
         $('#imageContent').html(data.content);
-        $('#imageContent').append('<div class="preloader-imagelist d-none"><img src="'+$('.preloader img').attr("src")+'"></div>');
+        // $('#imageContent').append('<div class="preloader-imagelist d-none"><img src="'+$('.preloader img').attr("src")+'"></div>');
         $('.imagesContent').css({'height':$('#imageContent').height()+'px'});
         // $('#mediaModalContent .preloader').addClass('d-none');
         $('#'+data.pagination.id).dsPagination();
@@ -269,30 +280,21 @@ $(function() {
   })
 
   $('body').addClass('no-transitions');
-
   $(document).on('click', '.dropdown-content', function (e) {
     e.stopPropagation();
   });
-
-  // Disabled links
   $('.navbar-nav .disabled a').on('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
   });
-
-  // Show tabs inside dropdowns
   $('.dropdown-content a[data-toggle="tab"]').on('click', function (e) {
       $(this).tab('show');
   });
-
-
   function containerHeight() {
       var availableHeight = $(window).height() - $('.page-container').offset().top - $('.navbar-fixed-bottom').outerHeight();
       $('.page-container').attr('style', 'min-height:' + availableHeight + 'px');
   }
   containerHeight();
-
-  // Panels
   $('.panel [data-action=reload]').click(function (e) {
       e.preventDefault();
       var block = $(this).parent().parent().parent().parent().parent();
@@ -316,9 +318,6 @@ $(function() {
          $(block).unblock();
       }, 2000); 
   });
-
-
-  // Sidebar categories
   $('.category-title [data-action=reload]').click(function (e) {
       e.preventDefault();
       var block = $(this).parent().parent().parent().parent();
@@ -343,9 +342,6 @@ $(function() {
          $(block).unblock();
       }, 2000); 
   }); 
-
-
-  // Light sidebar categories
   $('.sidebar-default .category-title [data-action=reload]').click(function (e) {
       e.preventDefault();
       var block = $(this).parent().parent().parent().parent();
@@ -369,25 +365,8 @@ $(function() {
          $(block).unblock();
       }, 2000); 
   }); 
-
-
-
-  // Collapse elements
-  // -------------------------
-
-  //
-  // Sidebar categories
-  //
-
-  // Hide if collapsed by default
   $('.category-collapsed').children('.category-content').hide();
-
-
-  // Rotate icon if collapsed by default
   $('.category-collapsed').find('[data-action=collapse]').addClass('rotate-180');
-
-
-  // Collapse on click
   $('.category-title [data-action=collapse]').click(function (e) {
       e.preventDefault();
       var $categoryCollapse = $(this).parent().parent().parent().nextAll();
@@ -398,21 +377,8 @@ $(function() {
 
       $categoryCollapse.slideToggle(150);
   });
-
-
-  //
-  // Panels
-  //
-
-  // Hide if collapsed by default
   $('.panel-collapsed').children('.panel-heading').nextAll().hide();
-
-
-  // Rotate icon if collapsed by default
   $('.panel-collapsed').find('[data-action=collapse]').addClass('rotate-180');
-
-
-  // Collapse on click
   $('.panel [data-action=collapse]').click(function (e) {
       e.preventDefault();
       var $panelCollapse = $(this).parent().parent().parent().parent().nextAll();
@@ -423,13 +389,6 @@ $(function() {
 
       $panelCollapse.slideToggle(150);
   });
-
-
-
-  // Remove elements
-  // -------------------------
-
-  // Panels
   $('.panel [data-action=close]').click(function (e) {
       e.preventDefault();
       var $panelClose = $(this).parent().parent().parent().parent().parent();
@@ -440,9 +399,6 @@ $(function() {
           $(this).remove();
       });
   });
-
-
-  // Sidebar categories
   $('.category-title [data-action=close]').click(function (e) {
       e.preventDefault();
       var $categoryClose = $(this).parent().parent().parent().parent();
@@ -453,172 +409,66 @@ $(function() {
           $(this).remove();
       });
   });
-
-
-
-
-  // ========================================
-  //
-  // Main navigation
-  //
-  // ========================================
-
-
-  // Main navigation
-  // -------------------------
-
-  // Add 'active' class to parent list item in all levels
   $('.navigation').find('li.active').parents('li').addClass('active');
-
-  // Hide all nested lists
   $('.navigation').find('li').not('.active, .category-title').has('ul').children('ul').addClass('hidden-ul');
-
-  // Highlight children links
   $('.navigation').find('li').has('ul').children('a').addClass('has-ul');
-
-  // Add active state to all dropdown parent levels
   $('.dropdown-menu:not(.dropdown-content), .dropdown-menu:not(.dropdown-content) .dropdown-submenu').has('li.active').addClass('active').parents('.navbar-nav .dropdown:not(.language-switch), .navbar-nav .dropup:not(.language-switch)').addClass('active');
-
-  
-
-  // Main navigation tooltips positioning
-  // -------------------------
-
-  // Left sidebar
   $('.navigation-main > .navigation-header > i').tooltip({
       placement: 'right',
       container: 'body'
   });
-
-
-
-  // Collapsible functionality
-  // -------------------------
-
-  // Main navigation
   $('.navigation-main').find('li').has('ul').children('a').on('click', function (e) {
       e.preventDefault();
-
-      // Collapsible
       $(this).parent('li').not('.disabled').not($('.sidebar-xs').not('.sidebar-xs-indicator').find('.navigation-main').children('li')).toggleClass('active').children('ul').slideToggle(250);
-
-      // Accordion
       if ($('.navigation-main').hasClass('navigation-accordion')) {
           $(this).parent('li').not('.disabled').not($('.sidebar-xs').not('.sidebar-xs-indicator').find('.navigation-main').children('li')).siblings(':has(.has-ul)').removeClass('active').children('ul').slideUp(250);
       }
   });
-
-      
-  // Alternate navigation
   $('.navigation-alt').find('li').has('ul').children('a').on('click', function (e) {
       e.preventDefault();
-
-      // Collapsible
       $(this).parent('li').not('.disabled').toggleClass('active').children('ul').slideToggle(200);
-
-      // Accordion
       if ($('.navigation-alt').hasClass('navigation-accordion')) {
           $(this).parent('li').not('.disabled').siblings(':has(.has-ul)').removeClass('active').children('ul').slideUp(200);
       }
   }); 
-
-
-
-
-  // ========================================
-  //
-  // Sidebars
-  //
-  // ========================================
-
-
-  // Mini sidebar
-  // -------------------------
-
-  // Toggle mini sidebar
   $('.sidebar-main-toggle').on('click', function (e) {
       e.preventDefault();
-
-      // Toggle min sidebar class
       $('body').toggleClass('sidebar-xs');
   });
-
-
-
-  // Sidebar controls
-  // -------------------------
-
-  // Disable click in disabled navigation items
   $(document).on('click', '.navigation .disabled a', function (e) {
       e.preventDefault();
   });
-
-
-  // Adjust page height on sidebar control button click
   $(document).on('click', '.sidebar-control', function (e) {
       containerHeight();
   });
-
-
-  // Hide main sidebar in Dual Sidebar
   $(document).on('click', '.sidebar-main-hide', function (e) {
       e.preventDefault();
       $('body').toggleClass('sidebar-main-hidden');
   });
-
-
-  // Toggle second sidebar in Dual Sidebar
   $(document).on('click', '.sidebar-secondary-hide', function (e) {
       e.preventDefault();
       $('body').toggleClass('sidebar-secondary-hidden');
   });
-
-
-  // Hide detached sidebar
   $(document).on('click', '.sidebar-detached-hide', function (e) {
       e.preventDefault();
       $('body').toggleClass('sidebar-detached-hidden');
   });
-
-
-  // Hide all sidebars
   $(document).on('click', '.sidebar-all-hide', function (e) {
       e.preventDefault();
 
       $('body').toggleClass('sidebar-all-hidden');
   });
-
-
-
-  //
-  // Opposite sidebar
-  //
-
-  // Collapse main sidebar if opposite sidebar is visible
   $(document).on('click', '.sidebar-opposite-toggle', function (e) {
       e.preventDefault();
-
-      // Opposite sidebar visibility
       $('body').toggleClass('sidebar-opposite-visible');
-
-      // If visible
       if ($('body').hasClass('sidebar-opposite-visible')) {
-
-          // Make main sidebar mini
           $('body').addClass('sidebar-xs');
-
-          // Hide children lists
           $('.navigation-main').children('li').children('ul').css('display', '');
       }
       else {
-
-          // Make main sidebar default
           $('body').removeClass('sidebar-xs');
       }
   });
-
-
-  // Hide main sidebar if opposite sidebar is shown
   $(document).on('click', '.sidebar-opposite-main-hide', function (e) {
       e.preventDefault();
 
@@ -637,9 +487,6 @@ $(function() {
           $('body').removeClass('sidebar-main-hidden');
       }
   });
-
-
-  // Hide secondary sidebar if opposite sidebar is shown
   $(document).on('click', '.sidebar-opposite-secondary-hide', function (e) {
       e.preventDefault();
 
@@ -659,9 +506,6 @@ $(function() {
           $('body').removeClass('sidebar-secondary-hidden');
       }
   });
-
-
-  // Hide all sidebars if opposite sidebar is shown
   $(document).on('click', '.sidebar-opposite-hide', function (e) {
       e.preventDefault();
 
@@ -683,53 +527,28 @@ $(function() {
           $('body').removeClass('sidebar-opposite-visible');
       }
   });
-
-
-  // Keep the width of the main sidebar if opposite sidebar is visible
   $(document).on('click', '.sidebar-opposite-fix', function (e) {
       e.preventDefault();
 
       // Toggle opposite sidebar visibility
       $('body').toggleClass('sidebar-opposite-visible');
   });
-
-
-
-  // Mobile sidebar controls
-  // -------------------------
-
-  // Toggle main sidebar
   $('.sidebar-mobile-main-toggle').on('click', function (e) {
       e.preventDefault();
       $('body').toggleClass('sidebar-mobile-main').removeClass('sidebar-mobile-secondary sidebar-mobile-opposite sidebar-mobile-detached');
   });
-
-
-  // Toggle secondary sidebar
   $('.sidebar-mobile-secondary-toggle').on('click', function (e) {
       e.preventDefault();
       $('body').toggleClass('sidebar-mobile-secondary').removeClass('sidebar-mobile-main sidebar-mobile-opposite sidebar-mobile-detached');
   });
-
-
-  // Toggle opposite sidebar
   $('.sidebar-mobile-opposite-toggle').on('click', function (e) {
       e.preventDefault();
       $('body').toggleClass('sidebar-mobile-opposite').removeClass('sidebar-mobile-main sidebar-mobile-secondary sidebar-mobile-detached');
   });
-
-
-  // Toggle detached sidebar
   $('.sidebar-mobile-detached-toggle').on('click', function (e) {
       e.preventDefault();
       $('body').toggleClass('sidebar-mobile-detached').removeClass('sidebar-mobile-main sidebar-mobile-secondary sidebar-mobile-opposite');
   });
-
-
-
-  // Mobile sidebar setup
-  // -------------------------
-
   $(window).on('resize', function() {
       setTimeout(function() {
           containerHeight();
@@ -782,25 +601,6 @@ $(function() {
           }
       }, 100);
   }).resize();
-
-
-
-
-  // ========================================
-  //
-  // Other code
-  //
-  // ========================================
-
-
-  // Plugins
-  // -------------------------
-
-  // Popover
   $('[data-popup="popover"]').popover();
-
-
-  // Tooltip
   $('[data-popup="tooltip"]').tooltip();
-
 });
