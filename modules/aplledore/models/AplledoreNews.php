@@ -300,7 +300,7 @@ class AplledoreNews extends \yii\db\ActiveRecord{
 
 	/* AUTHORS */
 	public static function getAuthors(){
-		return User::find()->where(['type'=>2])->asArray()->all();
+		return User::find()->with('postsCount')->where(['type'=>2])->asArray()->all();
 	}
 
 	public static function getAuthor($id){

@@ -22,7 +22,7 @@ class AplledoreCategory extends \yii\db\ActiveRecord{
 	}
 
 	public static function getContentList(){
-		return Category::find()->with('content')->asArray()->all();
+		return Category::find()->with('content','postsCount')->asArray()->all();
 	}
 
 	public static function contentLoad($content){

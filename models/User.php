@@ -52,6 +52,17 @@ class User extends ActiveRecord implements IdentityInterface{
     return self::find()->select('id,username,type')->asArray()->all();
   }
 
+  public function getPosts(){
+    return $this->hasMany(Post::classname(),['author_id'=>'id']);
+  }
+
+  public function getPostsCount(){
+    return  $this->getPosts()
+        ->select(['author_id', 'counted' => 'count(*)'])
+        ->groupBy('author_id')
+        ->asArray(true);
+  }
+
   public static function findIdentityByAccessToken($token, $type = null){
 
   }

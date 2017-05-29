@@ -15,4 +15,15 @@ class Thema extends \yii\db\ActiveRecord{
   public function getContents(){
     return $this->hasMany(ThemaContent::classname(),['thema_id' => 'id'])->indexBy('language');
   }
+
+  public function getPosts(){
+    return $this->hasMany(Post::classname(),['thema_id'=>'id']);
+  }
+
+  public function getPostsCount(){
+    return  $this->getPosts()
+        ->select(['thema_id', 'counted' => 'count(*)'])
+        ->groupBy('thema_id')
+        ->asArray(true);
+  }
 }

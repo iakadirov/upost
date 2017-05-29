@@ -16,12 +16,15 @@ class Category extends \yii\db\ActiveRecord{
     return $this->hasMany(CategoryContent::classname(),['category_id' => 'id'])->indexBy('language');
   }
 
-  public function getPost(){
+  public function getPosts(){
     return $this->hasMany(Post::classname(),['category_id'=>'id']);
   }
 
-  public function getPostCount(){
-    return $this->getPost()->count();
+  public function getPostsCount(){
+    return  $this->getPosts()
+        ->select(['category_id', 'counted' => 'count(*)'])
+        ->groupBy('category_id')
+        ->asArray(true);
   }
 
   public function attributeLabels(){

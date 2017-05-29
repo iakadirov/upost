@@ -1,6 +1,7 @@
 <?php 
 use app\components\IdevFunctions;
 use yii\widgets\ActiveForm;
+use yii\grid\GridView;
  ?>
 <div class="content">
   <div class="panel panel-flat">
@@ -39,24 +40,55 @@ use yii\widgets\ActiveForm;
     	<div class="col-md-6">
     		<h2><?=Yii::t('idev','thema list')?></h2>
     		<div id="themaList">
-    			<table class="table table-bordered table-hover">
-	    			<tbody>
-	    			<?php foreach ($data['content'] as $item): ?>
-	    				<tr>
-	    					<td style="width:35px;text-align:center;"><?=$item['id']?></td>
-	    					<td><?=$item['content']['name']?></td>
-	    					<td width="25%">
-	    						<?=date("Y-m-d H:i", (int)$item['date'])?><br/>
-	    						<?=date("Y-m-d H:i", (int)$item['update'])?>
-	    					</td>
-	    					<td width="15%">
-	    						<a href="<?=IdevFunctions::to('/thema/'.$item['id'])?>"><?=Yii::t('idev','Edit')?></a><br/>
-	    						<a href="<?=IdevFunctions::to('/thema/delete/'.$item['id'])?>" data-action="delete" data-text="<?=Yii::t('idev','Delete is thema {name}?',['name'=>$item['content']['name']]);?>"><?=Yii::t('idev','Delete')?></a>
-	    					</td>
-	    				</tr>
-	    			<?php endforeach ?>
-	    			</tbody>
-	    		</table>
+    			<?= GridView::widget([
+				    'dataProvider'=>$data['dataProvider'],
+				    'showHeader'=>false,
+				    'layout'=>'{items}<div class="p-10"></div>{pager}',
+		        'options'=>['id'=>'themaList'],
+		        'tableOptions' => [
+		            'class' => 'table table-hover table-bordered',
+		        ],
+		        'rowOptions'=>function ($model, $key, $index, $grid){
+			        return [
+		            'data-id'=>$model->id,
+			        ];
+				    },
+				    'columns' => [
+		            ['class' => 'yii\grid\SerialColumn'],
+		            [
+			            'label'=>Yii::t('idev','Name'),
+			            'content'=>function($data){
+			            	$content =  $data->content->name;
+			            	if(!empty($data->postsCount)){
+			            		$content .= ' - <b>('.$data->postsCount[0]['counted'].' '.Yii::t('idev','Count posts').')</b>';
+			            	}else{
+			            		$content .= ' - <b>(0 '.Yii::t('idev','Count posts').')</b>';
+			            	}
+			            	return $content;
+			            }
+				        ],
+				        [
+			            'label'=>Yii::t('idev','Date'),
+			            'contentOptions' =>function ($model, $key, $index, $column){
+			                return ['style' => 'width:25%;'];
+			            },
+			            'content'=>function($data){
+			            		return date("Y-m-d H:i", $dat->date).'<br/>'.date("Y-m-d H:i", $dat->update);
+			            }
+				        ],
+				        [
+			            'label'=>Yii::t('idev','Date'),
+			            'contentOptions' =>function ($model, $key, $index, $column){
+			                return ['style' => 'width:15%;'];
+			            },
+			            'content'=>function($data){
+			            	$content = '<a href="'.IdevFunctions::to('/thema/'.$item['id']).'">'.Yii::t('idev','Edit').'</a><br/>';
+			            	$content .= '<a href="'.IdevFunctions::to('/thema/delete/'.$item['id']).'" data-action="delete" data-text="'.Yii::t('idev','Delete is thema {name}?',['name'=>$item['content']['name']]).'">'.Yii::t('idev','Delete').'</a>';
+			            	return $content;
+			            }
+				        ],
+		        ],
+					]);?>
     		</div>
     	</div>
     </div>

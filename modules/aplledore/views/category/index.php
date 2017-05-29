@@ -65,7 +65,7 @@ use yii\widgets\ActiveForm;
 		    			<?php if ($item['parent_id']==0): ?>
 		    				<tr>
 		    					<td style="width:35px;text-align:center;"><?=$item['id']?></td>
-		    					<td><?=$item['content']['name']?></td>
+		    					<td><b><?=$item['content']['name']?></b> (<?=$item['postsCount'][0]['counted'].' '.Yii::t('idev','Count posts')?>)</td>
 		    					<td width="25%">
 		    						<?=date("Y-m-d H:i", (int)$item['date'])?><br/>
 		    						<?=date("Y-m-d H:i", (int)$item['update'])?>
@@ -79,7 +79,7 @@ use yii\widgets\ActiveForm;
 				    			<?php if ($child['parent_id']==$item['id']): ?>
 				    				<tr>
 				    					<td style="width:35px;text-align:center;"><?=$child['id']?></td>
-				    					<td> - <?=$child['content']['name']?></td>
+				    					<td><b> - <?=$child['content']['name']?></b> (<?=$child['postsCount'][0]['counted'].' '.Yii::t('idev','Count posts')?>)</td>
 				    					<td width="25%">
 				    						<?=date("Y-m-d H:i", (int)$child['date'])?><br/>
 				    						<?=date("Y-m-d H:i", (int)$child['update'])?>

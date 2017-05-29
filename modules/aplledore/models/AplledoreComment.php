@@ -2,19 +2,27 @@
 namespace app\modules\aplledore\models;
 
 use Yii;
-use app\models\Thema;
-use app\models\ThemaContent;
-use app\models\Seo;
+use app\models\Comment;
+use app\models\User;
 use app\components\IdevFunctions;
 
-class AplledoreThema extends \yii\db\ActiveRecord{
-	public static function getThema($id){
-		$content = Thema::find()->with('contents')->where(['id'=>$id])->asArray()->one();
+class AplledoreComment extends \yii\db\ActiveRecord{
+	public static function getComment($id){
+		$content = Comment::find()->with('contents')->where(['id'=>$id])->asArray()->one();
 		return $content;
 	}
 
 	public static function getContentList(){
-		return Thema::find()->with('content','postsCount');
+		$content['comments'] = Comment::find()->with('childs')->where(['parent_id'=>0])->asArray()->all();
+		$ids = [];
+		foreach ($content['comments'] as $item) {
+			$ids[$item['user_id']] = $item['user_id'];
+			foreach ($item['childs'] as $child) {
+				$ids[$child['user_id']] = $child['user_id'];
+			}
+		}
+		$content['users'] = User::find()->select('id,username,first_name,last_name')->where(['in','id', $ids])->indexBy('id')->asArray()->all();
+		return $content;
 	}
 
 	public static function contentLoad($content){
@@ -27,7 +35,7 @@ class AplledoreThema extends \yii\db\ActiveRecord{
 		return $content;
 	}
 
-	public static function deleteThema($id){
+	public static function deleteContent($id){
 		$content = Thema::findOne($id);
 		if(!empty($content)){
 			Yii::$app->db->createCommand()->update('post', ['thema_id' => 0], 'thema_id = '.$id)->execute();
@@ -44,33 +52,7 @@ class AplledoreThema extends \yii\db\ActiveRecord{
 		return $content;
 	}
 
-	protected function createThema($content){
-		$thema = new Thema();
-		$thema->date = time();
-		$thema->update = time();
-		if($thema->save()){
-			foreach (Yii::$app->params['langs'] as $key => $value) {
-				$themaContent = new ThemaContent();
-				$themaContent->thema_id = $thema->id;
-				$themaContent->language = $key;
-				$themaContent->name = $content[$key]['name'];
-				$themaContent->save();
-				$themaSeo = new Seo();
-				$themaSeo->parent_id = $thema->id;
-				$themaSeo->type = 'thema';
-				$themaSeo->language = $key;
-				$themaSeo->title = $themaContent->name;
-				$themaSeo->keywords = $themaContent->name;
-				$themaSeo->description = $themaContent->name;
-				$themaSeo->save();
-			}
-			return true;
-		}else{
-			return false;
-		}
-	}
-
-	protected function editThema($content){
+	protected function editContent($content){
 		$thema = Thema::findOne($content['id']);
 		$thema->update = time();
 		if($thema->save()){

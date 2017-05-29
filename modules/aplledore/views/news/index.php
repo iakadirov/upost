@@ -1,7 +1,7 @@
 <?php 
 	use app\components\IdevFunctions;
 	use yii\widgets\ActiveForm;
-	use yii\grid\GridView;
+	use yii\grid\GridView; 
 	use app\models\User;
 
 $sort = Yii::$app->session->get('sort_'.Yii::$app->controller->id);
@@ -58,7 +58,7 @@ if (isset($sort['status'])) {
 	            		if(empty($data->category)){
 	            			return '<b>'.Yii::t('idev','No').'</b>';
 	            		}else{
-	                	return '<b><a href="'.IdevFunctions::to('/category/'.$data->category_id).'">'.$data->category->name.'</a></b>';
+	                	return '<b>'.$data->category->name.'</b>';
 	            		}
 	            }
 		        ],

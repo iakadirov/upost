@@ -3,12 +3,11 @@ namespace app\modules\aplledore\controllers;
 use Yii;
 use app\modules\aplledore\models\AplledoreThema;
 use app\components\IdevFunctions;
+use yii\data\ActiveDataProvider;
 
 class ThemaController extends DevController{
   public function beforeAction($action){
     $arr = ['index'=>['index'],
-            'create'=>['index'],
-            'edit'=>['index'],
             'delete'=>['delete']];
     if(!$this->__hasRoleUser($arr,$action)){
       $this->redirect(['/aplledore/default/error']);
@@ -19,7 +18,14 @@ class ThemaController extends DevController{
   
   public function actionIndex($id=NULL) {
   	$this->view->title = Yii::t('idev','Thems');
-    $this->data['content'] = AplledoreThema::getContentList();
+    $content = AplledoreThema::getContentList();
+    // debug($content); die;
+    $this->data['dataProvider'] = new ActiveDataProvider([
+      'query' => $content,
+      'pagination' => [
+          'defaultPageSize' => 15,
+      ],
+    ]);
     if ($this->post['Thema']) {
       $thema = $this->post['Thema'];
       if ($id) {
@@ -45,9 +51,7 @@ class ThemaController extends DevController{
       $this->data['thema'] = AplledoreThema::getThema($id);
     }else{
       $this->data['title'] = Yii::t('idev','thema create');
-      // $this->data['thema'] = [];
     }
-    // debug($this->data); die;
     return $this->template('index');
   }
 

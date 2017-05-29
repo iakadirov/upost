@@ -57,7 +57,8 @@ use yii\widgets\ActiveForm;
 	    			<?php foreach ($data['authors'] as $item): ?>
 	    				<tr <?=$item['status']==0?'class="danger"':''?>>
 	    					<td style="width:35px;text-align:center;"><?=$item['id']?></td>
-	    					<td><?='<b>'.$item['username'].'</b> ('.$item['email'].')'?><br/><?=$item['first_name'].' '.$item['last_name']?></td>
+                <?php if(!empty($item['postsCount'])){$postCount=$item['postsCount'][0]['counted'];}else{$postCount=0;} ?>
+	    					<td><?='<b>'.$item['username'].'</b> ('.$item['email'].') - <b>('.$postCount.' '.Yii::t('idev','Count posts').')</b>'?><br/><?=$item['first_name'].' '.$item['last_name']?></td>
                 <td width="10%">
                   <button class="btn btn-primary" data-id="<?=$item['id']?>" id="createRightUser"><i class="icon-list"></i></button>
                 </td>

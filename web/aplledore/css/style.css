@@ -65,6 +65,7 @@
 .modal{z-index:99999;}
 #mediaModalContent{width: 90%;height: 90%;position: fixed;top: 50%;left: 50%;overflow: hidden;transform: translate(-50%, -50%);}
 #mediaModalContent > .modal-dialog{width: 100%;}
+#mediaModalContent .modal-content{height:100%;}
 #mediaModalContent .tab-content{padding:10px 10px 0 10px;}
 #mediaModalContent .tab-content .tab-pane{height: 100%;position: relative;}
 #myAwesomeDropzone label{position: absolute;top: 50%;left: 50%;width: 80%;text-align: center;-webkit-transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);transform: translate(-50%,-50%);font-size: 26px !important;}
@@ -83,10 +84,12 @@
 .pasteImages{width:100%;padding: 5px;background-color: #fff;border-color: rgb(0, 19, 19);position: relative;}
 .pasteImages:hover,.pasteImages:focus{text-decoration: none;color: #0275d8;border-color: rgb(0, 19, 19);}
 .pasteImages span.icon-cross{position: absolute;top: 5px;right: 5px;display: block;font-size: 16px;cursor: pointer;color: #fff;padding: 8px;background-color: #000;}
-#newsPostList thead tr th:first-child{width:35px;}
+#newsPostList thead tr th:first-child{width:35px;text-align:center;}
 #newsPostList .postAuthor{width: 100px;}
 #newsPostList .postActions{width:80px;}
 #newsPostList .postStatus{width:60px;}
 .postPriority span{cursor:pointer;}
+.checkbox-switch{border:none;}
+#themaList tbody tr td:first-child{width:40px;text-align:center;}
 
 
