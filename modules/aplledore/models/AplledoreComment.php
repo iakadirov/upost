@@ -3,6 +3,7 @@ namespace app\modules\aplledore\models;
 
 use Yii;
 use app\models\Comment;
+use app\models\PostContent;
 use app\models\User;
 use app\components\IdevFunctions;
 
@@ -12,18 +13,22 @@ class AplledoreComment extends \yii\db\ActiveRecord{
 		return $content;
 	}
 
-	public static function getContentList(){
+	/*public static function getContentList(){
 		$content['comments'] = Comment::find()->with('childs')->where(['parent_id'=>0])->asArray()->all();
 		$ids = [];
+		$post = [];
 		foreach ($content['comments'] as $item) {
 			$ids[$item['user_id']] = $item['user_id'];
+			$post[$item['post_id']] = $item['post_id'];
 			foreach ($item['childs'] as $child) {
 				$ids[$child['user_id']] = $child['user_id'];
+				$post[$child['post_id']] = $child['post_id'];
 			}
 		}
 		$content['users'] = User::find()->select('id,username,first_name,last_name')->where(['in','id', $ids])->indexBy('id')->asArray()->all();
+		$content['post'] = PostContent::find()->select(['post_id','language','name'])->where(['in','post_id',$post])->indexBy('post_id')->asArray()->all();
 		return $content;
-	}
+	}*/
 
 	public static function contentLoad($content){
 		if (isset($content['id'])) {
