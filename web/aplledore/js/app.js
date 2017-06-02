@@ -149,9 +149,9 @@ $(function() {
     //   'data-something': 'my data'
     // },
     // invalid_styles: 'color font-size',
-    valid_classes: {
+    /*valid_classes: {
       'img': 'image_class', // Global classes
-    },
+    },*/
     browser_spellcheck: true,
     theme : "modern",
     menubar: false,

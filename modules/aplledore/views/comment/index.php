@@ -20,8 +20,25 @@ if (isset($sort['status'])) {
         </ul>
       </div>
     </div> -->
-    <?php debug($data['users']) ?>
-    <?php debug($data['post']) ?>
+    <table class="table table-hover table-bordered">
+      <tbody>
+        <?php foreach ($data['content'] as $comment): ?>
+          <tr>
+            <td>
+              <p class="mb-0"><b><?=Yii::t('idev','Content').':</b> '.$comment['content']?></p>
+              <p class="mb-0"><b><?=Yii::t('idev','Post').':</b> '.$data['post'][$comment['post_id']]['name']?></p>
+              <p class="mb-0"><b>
+                <?=Yii::t('idev','Author').':</b> '.$data['users'][$comment['user_id']]['username'].' '.Yii::t('idev','in').' '.date('Y-d-m H:i',$comment['date'])?>
+                <?=$comment['repla']?>
+              </p>
+            </td>
+          </tr>
+        <?php endforeach ?>
+      </tbody>
+    </table>
+    <!-- <#?php debug($data['content']); ?> -->
+    <!-- <#?php debug($data['users']) ?> -->
+    <!-- <#?php debug($data['post']) ?> -->
     <!-- <#?= debug(app\models\Post::find()->with('content','category')->all())?> -->
     <?php echo LinkPager::widget(['pagination' => $data['pages']]); ?>
   </div>
