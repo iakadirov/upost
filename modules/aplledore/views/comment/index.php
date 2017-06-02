@@ -23,13 +23,13 @@ if (isset($sort['status'])) {
     <table class="table table-hover table-bordered">
       <tbody>
         <?php foreach ($data['content'] as $comment): ?>
-          <tr>
+          <tr class="<?=$comment['status']==0?'danger':''?>">
             <td>
               <p class="mb-0"><b><?=Yii::t('idev','Content').':</b> '.$comment['content']?></p>
               <p class="mb-0"><b><?=Yii::t('idev','Post').':</b> '.$data['post'][$comment['post_id']]['name']?></p>
               <p class="mb-0"><b>
                 <?=Yii::t('idev','Author').':</b> '.$data['users'][$comment['user_id']]['username'].' '.Yii::t('idev','in').' '.date('Y-d-m H:i',$comment['date'])?>
-                <?=$comment['repla']?>
+                <?=$comment['replay_author_id'] != 0?Yii::t('idev','responded to').' '.$data['users'][$comment['replay_author_id']]['username']:''?>
               </p>
             </td>
           </tr>
