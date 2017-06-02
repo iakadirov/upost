@@ -14,7 +14,7 @@ use app\components\IdevFunctions;
       <li <?=IdevFunctions::isActiveItem('news/new-post-list','class="active"')?>><a href="<?=IdevFunctions::to('/news/new-post-list')?>"><i class="icon-magazine"></i><span>Nashr uchun <span class="label bg-danger-400">25</span></span></a></li>
       <li <?=IdevFunctions::isActiveItem('news/index','class="active"')?>><a href="<?=IdevFunctions::to('/news/')?>"><i class="icon-server"></i> Barcha xabarlar</a></li>
       <li <?=IdevFunctions::isActiveItem('thema/index','class="active"')?>><a href="<?=IdevFunctions::to('/thema')?>"><i class="icon-archive"></i> Mavzular</a></li>
-      <li><a href="<?=IdevFunctions::to('/comment/')?>"><i class="icon-bubbles2"></i> <span>Izohlar<span class="label bg-indigo-400">74</span></span></a></li>
+      <li <?=IdevFunctions::isActiveItem('comment/index','class="active"')?>><a href="<?=IdevFunctions::to('/comment/')?>"><i class="icon-bubbles2"></i> <span>Izohlar<span class="label bg-indigo-400">74</span></span></a></li>
       <?php if (User::isAdmin()): ?>
       <li <?=IdevFunctions::isActiveItem('news/authors','class="active"')?>><a href="<?=IdevFunctions::to('/news/authors')?>"><i class="icon-quill4"></i> Mualliflar</a></li>
       <li <?=IdevFunctions::isActiveItem('category/index','class="active"')?>><a href="<?=IdevFunctions::to('/category/')?>"><i class="icon-list"></i> Kategoriyalar</a></li>
