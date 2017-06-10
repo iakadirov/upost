@@ -6,6 +6,8 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use app\models\User;
+use app\components\IdevFunctions;
+
 
 class DsController extends Controller
 {
@@ -27,6 +29,11 @@ class DsController extends Controller
       ],
     ];
   }*/
+
+  public function beforeAction($action){
+    $this->view->svg = IdevFunctions::svg();
+    return parent::beforeAction($action);
+  }
 
 
   public function userGoHome(){

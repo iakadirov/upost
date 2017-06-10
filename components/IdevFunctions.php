@@ -102,4 +102,9 @@ class IdevFunctions{
 	  return $s; // возвращаем результат
 	}*/
 
+	/* FRONTEND */
+	public function svg(){
+		return include_once('svg.php');
+	}
+
 }

@@ -135,6 +135,8 @@ class View extends \yii\base\View
 
     private $_assetManager;
 
+    public $svg;
+
 
 
     /**
